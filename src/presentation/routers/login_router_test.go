@@ -8,8 +8,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func makeSut() *routers.LoginRouter {
+	return routers.NewLoginRouter()
+}
+
 func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
-	sut := routers.NewLoginRouter()
+	sut := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -27,7 +31,7 @@ func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
-	sut := routers.NewLoginRouter()
+	sut := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -46,7 +50,7 @@ func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
-	sut := routers.NewLoginRouter()
+	sut := makeSut()
 
 	httpResponse := sut.Route(nil)
 
@@ -54,7 +58,7 @@ func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
-	sut := routers.NewLoginRouter()
+	sut := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{}
 
@@ -62,3 +66,13 @@ func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
 
 	assert.Equal(t, 500, httpResponse.StatusCode)
 }
+
+// func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
+// 	sut := makeSut()
+
+// 	httpRequest := &helpers.HTTPRequest{}
+
+// 	httpResponse := sut.Route(httpRequest)
+
+// 	assert.Equal(t, 500, httpResponse.StatusCode)
+// }
