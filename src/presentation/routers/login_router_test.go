@@ -1,93 +1,17 @@
 package routers_test
 
 import (
-	"errors"
-	"reflect"
 	"testing"
 
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/routers"
 	"github.com/stretchr/testify/assert"
 )
 
-type HttpRequest struct {
-	Body struct {
-		Email    string
-		Password string
-	}
-}
-
-type HttpResponse struct {
-	StatusCode  int
-	ErrorObject error
-	ErrorName   string
-}
-
-func NewHttpResponse() *HttpResponse {
-	return &HttpResponse{}
-}
-
-func (hres *HttpResponse) Success() *HttpResponse {
-	hres.StatusCode = 200
-
-	return hres
-}
-
-func (hres *HttpResponse) BadRequest(param string) *HttpResponse {
-	hres.StatusCode = 400
-
-	newMissingParamError := NewMissingParamError(param)
-
-	hres.ErrorObject = newMissingParamError.Error
-	hres.ErrorName = newMissingParamError.Name
-
-	return hres
-}
-
-func (hres *HttpResponse) ServerError() *HttpResponse {
-	hres.StatusCode = 500
-
-	return hres
-}
-
-type MissingParamError struct {
-	Error error
-	Name  string
-}
-
-func NewMissingParamError(param string) *MissingParamError {
-	return &MissingParamError{
-		Error: errors.New("Missing param: " + param),
-		Name:  "MissingParamError",
-	}
-}
-
-type LoginRouter struct{}
-
-func NewLoginRouter() *LoginRouter {
-	return &LoginRouter{}
-}
-
-func (lr *LoginRouter) Route(hr *HttpRequest) *HttpResponse {
-	if hr == nil || reflect.ValueOf(hr.Body).IsZero() {
-		return NewHttpResponse().ServerError()
-	}
-
-	if hr.Body.Email == "" {
-		return NewHttpResponse().BadRequest("email")
-	}
-
-	if hr.Body.Password == "" {
-		return NewHttpResponse().BadRequest("password")
-
-	}
-
-	return NewHttpResponse().Success()
-
-}
-
 func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
-	sut := NewLoginRouter()
+	sut := routers.NewLoginRouter()
 
-	httpRequest := &HttpRequest{
+	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
 			Email    string
 			Password string
@@ -103,9 +27,9 @@ func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
-	sut := NewLoginRouter()
+	sut := routers.NewLoginRouter()
 
-	httpRequest := &HttpRequest{
+	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
 			Email    string
 			Password string
@@ -122,7 +46,7 @@ func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
-	sut := NewLoginRouter()
+	sut := routers.NewLoginRouter()
 
 	httpResponse := sut.Route(nil)
 
@@ -130,9 +54,9 @@ func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
-	sut := NewLoginRouter()
+	sut := routers.NewLoginRouter()
 
-	httpRequest := &HttpRequest{}
+	httpRequest := &helpers.HTTPRequest{}
 
 	httpResponse := sut.Route(httpRequest)
 
