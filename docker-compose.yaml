@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  app:
+    container_name: auth_clean_architecture
+    build: .
+    volumes:
+      - .:/go/src/auth_clean_architecture
+    ports:
+      - 4500:4500
+  database:
+    image: mongo
+    container_name: mongo
+    environment: 
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./.docker/mongodb/data/db:/data/db
+    ports:
+      - 27017:27017
+  
