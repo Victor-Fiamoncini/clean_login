@@ -4,16 +4,21 @@ import (
 	"testing"
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/mocks"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/routers"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
 	"github.com/stretchr/testify/assert"
 )
 
-func makeSut() *routers.LoginRouter {
-	return routers.NewLoginRouter()
+func makeSut() (*routers.LoginRouter, *usecases.AuthUseCase) {
+	// Convert a spy class to production class
+	authUseCaseSpy := (*usecases.AuthUseCase)(mocks.NewAuthUseCaseSpy())
+
+	return routers.NewLoginRouter(authUseCaseSpy), authUseCaseSpy
 }
 
 func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
-	sut := makeSut()
+	sut, _ := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -31,7 +36,7 @@ func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
-	sut := makeSut()
+	sut, _ := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -50,7 +55,7 @@ func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
-	sut := makeSut()
+	sut, _ := makeSut()
 
 	httpResponse := sut.Route(nil)
 
@@ -58,7 +63,7 @@ func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
-	sut := makeSut()
+	sut, _ := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{}
 
@@ -67,12 +72,21 @@ func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
 	assert.Equal(t, 500, httpResponse.StatusCode)
 }
 
-// func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
-// 	sut := makeSut()
+func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
+	sut, authUseCaseSpy := makeSut()
 
-// 	httpRequest := &helpers.HTTPRequest{}
+	httpRequest := &helpers.HTTPRequest{
+		Body: struct {
+			Email    string
+			Password string
+		}{
+			Email:    "any_email@mail.com",
+			Password: "my_pass",
+		},
+	}
 
-// 	httpResponse := sut.Route(httpRequest)
+	sut.Route(httpRequest)
 
-// 	assert.Equal(t, 500, httpResponse.StatusCode)
-// }
+	assert.Equal(t, httpRequest.Body.Email, authUseCaseSpy.Email)
+	assert.Equal(t, httpRequest.Body.Password, authUseCaseSpy.Password)
+}

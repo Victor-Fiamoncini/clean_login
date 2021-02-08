@@ -4,14 +4,19 @@ import (
 	"reflect"
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
 )
 
 // LoginRouter struct
-type LoginRouter struct{}
+type LoginRouter struct {
+	AuthUseCase *usecases.AuthUseCase
+}
 
 // NewLoginRouter func
-func NewLoginRouter() *LoginRouter {
-	return &LoginRouter{}
+func NewLoginRouter(authUseCase *usecases.AuthUseCase) *LoginRouter {
+	return &LoginRouter{
+		AuthUseCase: authUseCase,
+	}
 }
 
 // Route LoginRouter method
@@ -20,15 +25,18 @@ func (lr *LoginRouter) Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse {
 		return helpers.NewHTTPResponse().ServerError()
 	}
 
-	if hr.Body.Email == "" {
+	email := hr.Body.Email
+	password := hr.Body.Password
+
+	if email == "" {
 		return helpers.NewHTTPResponse().BadRequest("email")
 	}
 
-	if hr.Body.Password == "" {
+	if password == "" {
 		return helpers.NewHTTPResponse().BadRequest("password")
-
 	}
 
-	return helpers.NewHTTPResponse().Success()
+	lr.AuthUseCase.Auth(email, password)
 
+	return helpers.NewHTTPResponse().Success()
 }
