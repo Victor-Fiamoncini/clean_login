@@ -24,7 +24,7 @@ func NewLoginRouter() *LoginRouter {
 }
 
 func (lr *LoginRouter) Route(hr *httpRequest) *httpResponse {
-	if hr.Body.Email == "" {
+	if hr.Body.Email == "" || hr.Body.Password == "" {
 		return &httpResponse{
 			statusCode: 400,
 		}
@@ -43,8 +43,24 @@ func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
 			Email    string
 			Password string
 		}{
-			Email:    "",
 			Password: "any_password",
+		},
+	}
+
+	httpResponse := sut.Route(httpRequest)
+
+	assert.Equal(t, 400, httpResponse.statusCode)
+}
+
+func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
+	sut := NewLoginRouter()
+
+	httpRequest := &httpRequest{
+		Body: struct {
+			Email    string
+			Password string
+		}{
+			Email: "any_email@mail.com",
 		},
 	}
 
