@@ -62,6 +62,7 @@ func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
 	httpResponse := sut.Route(nil)
 
 	assert.Equal(t, 500, httpResponse.StatusCode)
+	assert.Equal(t, "Internal Error", httpResponse.ErrorObject.Error())
 }
 
 func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
@@ -72,6 +73,8 @@ func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
 	httpResponse := sut.Route(httpRequest)
 
 	assert.Equal(t, 500, httpResponse.StatusCode)
+	assert.Equal(t, "Internal Error", httpResponse.ErrorObject.Error())
+
 }
 
 func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
@@ -130,6 +133,7 @@ func TestShouldReturn500IfNoAuthUseCaseIsProvided(t *testing.T) {
 	httpResponse := sut.Route(httpRequest)
 
 	assert.Equal(t, 500, httpResponse.StatusCode)
+	assert.Equal(t, "Internal Error", httpResponse.ErrorObject.Error())
 }
 
 func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {

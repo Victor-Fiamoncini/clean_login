@@ -57,5 +57,10 @@ func (hres *HTTPResponse) Unauthorized() *HTTPResponse {
 func (hres *HTTPResponse) ServerError() *HTTPResponse {
 	hres.StatusCode = 500
 
+	newServerError := NewServerError()
+
+	hres.ErrorObject = newServerError.Error
+	hres.ErrorName = newServerError.Name
+
 	return hres
 }
