@@ -2,13 +2,13 @@ package routers
 
 import (
 	"reflect"
-	"regexp"
 
+	custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
 )
 
-var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+// var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 // ILoginRouter interface
 type ILoginRouter interface {
@@ -39,15 +39,15 @@ func (lr *LoginRouter) Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse {
 	password := hr.Body.Password
 
 	if email == "" {
-		return httpResponse.BadRequest("email")
+		return httpResponse.BadRequest(custom_errors.NewMissingParamError("email"))
 	}
 
-	if !emailRegex.MatchString(email) {
-		return httpResponse.BadRequest("email")
-	}
+	// if !emailRegex.MatchString(email) {
+	// 	return httpResponse.BadRequest("email")
+	// }
 
 	if password == "" {
-		return httpResponse.BadRequest("password")
+		return httpResponse.BadRequest(custom_errors.NewMissingParamError("password"))
 	}
 
 	accessToken := lr.AuthUseCase.Auth(email, password)

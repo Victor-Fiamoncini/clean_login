@@ -7,7 +7,7 @@ import (
 // IHTTPResponse interface
 type IHTTPResponse interface {
 	Success() *HTTPResponse
-	BadRequest(param string) *HTTPResponse
+	BadRequest(err custom_errors.IDefaultError) *HTTPResponse
 	Unauthorized() *HTTPResponse
 	ServerError() *HTTPResponse
 }
@@ -37,10 +37,8 @@ func (hres *HTTPResponse) Success(data map[string]interface{}) *HTTPResponse {
 func (hres *HTTPResponse) BadRequest(err custom_errors.IDefaultError) *HTTPResponse {
 	hres.StatusCode = 400
 
-	newMissingParamError := err(param)
-
-	hres.ErrorObject = error.Error()
-	hres.ErrorName = errors
+	hres.ErrorObject = err.GetError()
+	hres.ErrorName = err.GetName()
 
 	return hres
 }
@@ -51,8 +49,8 @@ func (hres *HTTPResponse) Unauthorized() *HTTPResponse {
 
 	newUnauthorizedError := custom_errors.NewUnauthorizedError()
 
-	hres.ErrorObject = newUnauthorizedError.Error
-	hres.ErrorName = newUnauthorizedError.Name
+	hres.ErrorObject = newUnauthorizedError.GetError()
+	hres.ErrorName = newUnauthorizedError.GetName()
 
 	return hres
 }
@@ -63,8 +61,8 @@ func (hres *HTTPResponse) ServerError() *HTTPResponse {
 
 	newServerError := custom_errors.NewServerError()
 
-	hres.ErrorObject = newServerError.Error
-	hres.ErrorName = newServerError.Name
+	hres.ErrorObject = newServerError.GetError()
+	hres.ErrorName = newServerError.GetName()
 
 	return hres
 }
