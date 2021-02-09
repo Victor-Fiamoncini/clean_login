@@ -35,6 +35,11 @@ func (hres *HTTPResponse) BadRequest(param string) *HTTPResponse {
 func (hres *HTTPResponse) Unauthorized() *HTTPResponse {
 	hres.StatusCode = 401
 
+	newUnauthorizedError := NewUnauthorizedError()
+
+	hres.ErrorObject = newUnauthorizedError.Error
+	hres.ErrorName = newUnauthorizedError.Name
+
 	return hres
 }
 

@@ -107,4 +107,5 @@ func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
 	httpResponse := sut.Route(httpRequest)
 
 	assert.Equal(t, 401, httpResponse.StatusCode)
+	assert.Equal(t, "Unauthorized", httpResponse.ErrorObject.Error())
 }
