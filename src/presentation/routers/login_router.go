@@ -7,6 +7,11 @@ import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
 )
 
+// ILoginRouter interface
+type ILoginRouter interface {
+	Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse
+}
+
 // LoginRouter struct
 type LoginRouter struct {
 	AuthUseCase *usecases.AuthUseCase
@@ -23,7 +28,7 @@ func NewLoginRouter(authUseCase *usecases.AuthUseCase) *LoginRouter {
 func (lr *LoginRouter) Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse {
 	httpResponse := helpers.NewHTTPResponse()
 
-	if hr == nil || reflect.ValueOf(hr.Body).IsZero() {
+	if hr == nil || reflect.ValueOf(hr.Body).IsZero() || lr.AuthUseCase == nil {
 		return httpResponse.ServerError()
 	}
 
@@ -38,7 +43,11 @@ func (lr *LoginRouter) Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse {
 		return httpResponse.BadRequest("password")
 	}
 
-	lr.AuthUseCase.Auth(email, password)
+	accessToken := lr.AuthUseCase.Auth(email, password)
 
-	return httpResponse.Unauthorized()
+	if accessToken == "" {
+		return httpResponse.Unauthorized()
+	}
+
+	return httpResponse.Success()
 }

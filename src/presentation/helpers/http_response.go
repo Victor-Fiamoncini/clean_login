@@ -1,5 +1,13 @@
 package helpers
 
+// IHTTPResponse interface
+type IHTTPResponse interface {
+	Success() *HTTPResponse
+	BadRequest(param string) *HTTPResponse
+	Unauthorized() *HTTPResponse
+	ServerError() *HTTPResponse
+}
+
 // HTTPResponse struct
 type HTTPResponse struct {
 	StatusCode  int

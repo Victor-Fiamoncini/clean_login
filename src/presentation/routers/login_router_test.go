@@ -14,6 +14,8 @@ func makeSut() (*routers.LoginRouter, *usecases.AuthUseCase) {
 	// Convert a spy class to production class
 	authUseCaseSpy := (*usecases.AuthUseCase)(mocks.NewAuthUseCaseSpy())
 
+	authUseCaseSpy.AccessToken = "valid_token"
+
 	return routers.NewLoginRouter(authUseCaseSpy), authUseCaseSpy
 }
 
@@ -92,7 +94,9 @@ func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
 }
 
 func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
-	sut, _ := makeSut()
+	sut, authUseCase := makeSut()
+
+	authUseCase.AccessToken = ""
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -108,4 +112,40 @@ func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
 
 	assert.Equal(t, 401, httpResponse.StatusCode)
 	assert.Equal(t, "Unauthorized", httpResponse.ErrorObject.Error())
+}
+
+func TestShouldReturn500IfNoAuthUseCaseIsProvided(t *testing.T) {
+	sut := routers.NewLoginRouter(nil)
+
+	httpRequest := &helpers.HTTPRequest{
+		Body: struct {
+			Email    string
+			Password string
+		}{
+			Email:    "any_email@mail.com",
+			Password: "any_pass",
+		},
+	}
+
+	httpResponse := sut.Route(httpRequest)
+
+	assert.Equal(t, 500, httpResponse.StatusCode)
+}
+
+func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {
+	sut, _ := makeSut()
+
+	httpRequest := &helpers.HTTPRequest{
+		Body: struct {
+			Email    string
+			Password string
+		}{
+			Email:    "valid_email@mail.com",
+			Password: "valid_pass",
+		},
+	}
+
+	httpResponse := sut.Route(httpRequest)
+
+	assert.Equal(t, 200, httpResponse.StatusCode)
 }
