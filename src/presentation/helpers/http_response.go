@@ -1,5 +1,9 @@
 package helpers
 
+import (
+	custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/errors"
+)
+
 // IHTTPResponse interface
 type IHTTPResponse interface {
 	Success() *HTTPResponse
@@ -30,13 +34,13 @@ func (hres *HTTPResponse) Success(data map[string]interface{}) *HTTPResponse {
 }
 
 // BadRequest HTTPResponse method
-func (hres *HTTPResponse) BadRequest(param string) *HTTPResponse {
+func (hres *HTTPResponse) BadRequest(err custom_errors.IDefaultError) *HTTPResponse {
 	hres.StatusCode = 400
 
-	newMissingParamError := NewMissingParamError(param)
+	newMissingParamError := err(param)
 
-	hres.ErrorObject = newMissingParamError.Error
-	hres.ErrorName = newMissingParamError.Name
+	hres.ErrorObject = error.Error()
+	hres.ErrorName = errors
 
 	return hres
 }
@@ -45,7 +49,7 @@ func (hres *HTTPResponse) BadRequest(param string) *HTTPResponse {
 func (hres *HTTPResponse) Unauthorized() *HTTPResponse {
 	hres.StatusCode = 401
 
-	newUnauthorizedError := NewUnauthorizedError()
+	newUnauthorizedError := custom_errors.NewUnauthorizedError()
 
 	hres.ErrorObject = newUnauthorizedError.Error
 	hres.ErrorName = newUnauthorizedError.Name
@@ -57,7 +61,7 @@ func (hres *HTTPResponse) Unauthorized() *HTTPResponse {
 func (hres *HTTPResponse) ServerError() *HTTPResponse {
 	hres.StatusCode = 500
 
-	newServerError := NewServerError()
+	newServerError := custom_errors.NewServerError()
 
 	hres.ErrorObject = newServerError.Error
 	hres.ErrorName = newServerError.Name

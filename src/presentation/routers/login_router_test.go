@@ -154,3 +154,22 @@ func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {
 	assert.Equal(t, 200, httpResponse.StatusCode)
 	assert.Equal(t, httpResponse.Body["AccessToken"], authUseCaseSpy.AccessToken)
 }
+
+// func TestShouldReturn400IfAnInvalidEmailIsProvided(t *testing.T) {
+// 	sut, _ := makeSut()
+
+// 	httpRequest := &helpers.HTTPRequest{
+// 		Body: struct {
+// 			Email    string
+// 			Password string
+// 		}{
+// 			Email:    "invalid_email@mail.com",
+// 			Password: "any_password",
+// 		},
+// 	}
+
+// 	httpResponse := sut.Route(httpRequest)
+
+// 	assert.Equal(t, 400, httpResponse.StatusCode)
+// 	assert.Equal(t, "Missing param: email", httpResponse.ErrorObject.Error())
+// }
