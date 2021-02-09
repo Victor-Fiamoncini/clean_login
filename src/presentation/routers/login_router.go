@@ -49,5 +49,8 @@ func (lr *LoginRouter) Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse {
 		return httpResponse.Unauthorized()
 	}
 
-	return httpResponse.Success()
+	responseBody := make(map[string]interface{})
+	responseBody["AccessToken"] = accessToken
+
+	return httpResponse.Success(responseBody)
 }

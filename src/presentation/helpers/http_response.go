@@ -13,6 +13,7 @@ type HTTPResponse struct {
 	StatusCode  int
 	ErrorObject error
 	ErrorName   string
+	Body        map[string]interface{}
 }
 
 // NewHTTPResponse func
@@ -21,8 +22,9 @@ func NewHTTPResponse() *HTTPResponse {
 }
 
 // Success HTTPResponse method
-func (hres *HTTPResponse) Success() *HTTPResponse {
+func (hres *HTTPResponse) Success(data map[string]interface{}) *HTTPResponse {
 	hres.StatusCode = 200
+	hres.Body = data
 
 	return hres
 }

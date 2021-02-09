@@ -94,9 +94,9 @@ func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
 }
 
 func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
-	sut, authUseCase := makeSut()
+	sut, authUseCaseSpy := makeSut()
 
-	authUseCase.AccessToken = ""
+	authUseCaseSpy.AccessToken = ""
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -133,7 +133,7 @@ func TestShouldReturn500IfNoAuthUseCaseIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {
-	sut, _ := makeSut()
+	sut, authUseCaseSpy := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -148,4 +148,5 @@ func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {
 	httpResponse := sut.Route(httpRequest)
 
 	assert.Equal(t, 200, httpResponse.StatusCode)
+	assert.Equal(t, httpResponse.Body["AccessToken"], authUseCaseSpy.AccessToken)
 }
