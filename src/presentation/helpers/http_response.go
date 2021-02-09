@@ -31,6 +31,13 @@ func (hres *HTTPResponse) BadRequest(param string) *HTTPResponse {
 	return hres
 }
 
+// Unauthorized HTTPResponse method
+func (hres *HTTPResponse) Unauthorized() *HTTPResponse {
+	hres.StatusCode = 401
+
+	return hres
+}
+
 // ServerError HTTPResponse method
 func (hres *HTTPResponse) ServerError() *HTTPResponse {
 	hres.StatusCode = 500

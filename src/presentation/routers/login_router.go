@@ -21,22 +21,24 @@ func NewLoginRouter(authUseCase *usecases.AuthUseCase) *LoginRouter {
 
 // Route LoginRouter method
 func (lr *LoginRouter) Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse {
+	httpResponse := helpers.NewHTTPResponse()
+
 	if hr == nil || reflect.ValueOf(hr.Body).IsZero() {
-		return helpers.NewHTTPResponse().ServerError()
+		return httpResponse.ServerError()
 	}
 
 	email := hr.Body.Email
 	password := hr.Body.Password
 
 	if email == "" {
-		return helpers.NewHTTPResponse().BadRequest("email")
+		return httpResponse.BadRequest("email")
 	}
 
 	if password == "" {
-		return helpers.NewHTTPResponse().BadRequest("password")
+		return httpResponse.BadRequest("password")
 	}
 
 	lr.AuthUseCase.Auth(email, password)
 
-	return helpers.NewHTTPResponse().Success()
+	return httpResponse.Unauthorized()
 }

@@ -81,7 +81,7 @@ func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
 			Password string
 		}{
 			Email:    "any_email@mail.com",
-			Password: "my_pass",
+			Password: "any_password",
 		},
 	}
 
@@ -89,4 +89,22 @@ func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
 
 	assert.Equal(t, httpRequest.Body.Email, authUseCaseSpy.Email)
 	assert.Equal(t, httpRequest.Body.Password, authUseCaseSpy.Password)
+}
+
+func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
+	sut, _ := makeSut()
+
+	httpRequest := &helpers.HTTPRequest{
+		Body: struct {
+			Email    string
+			Password string
+		}{
+			Email:    "invalid_email@mail.com",
+			Password: "invalid_pass",
+		},
+	}
+
+	httpResponse := sut.Route(httpRequest)
+
+	assert.Equal(t, 401, httpResponse.StatusCode)
 }
