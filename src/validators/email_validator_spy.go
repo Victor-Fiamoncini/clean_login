@@ -1,8 +1,4 @@
-package mocks
-
-import (
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/validators"
-)
+package validators
 
 // EmailValidatorSpy struct
 type EmailValidatorSpy struct {
@@ -10,7 +6,7 @@ type EmailValidatorSpy struct {
 }
 
 // NewEmailValidatorSpy func
-func NewEmailValidatorSpy() validators.IEmailValidator {
+func NewEmailValidatorSpy() IEmailValidator {
 	return &EmailValidatorSpy{}
 }
 

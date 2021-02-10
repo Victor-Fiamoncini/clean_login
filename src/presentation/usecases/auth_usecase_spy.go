@@ -1,6 +1,4 @@
-package mocks
-
-import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
+package usecases
 
 // AuthUseCaseSpy struct
 type AuthUseCaseSpy struct {
@@ -10,7 +8,7 @@ type AuthUseCaseSpy struct {
 }
 
 // NewAuthUseCaseSpy func
-func NewAuthUseCaseSpy() usecases.IAuthUseCase {
+func NewAuthUseCaseSpy() IAuthUseCase {
 	return &AuthUseCaseSpy{}
 }
 

@@ -6,8 +6,8 @@ import (
 	custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/validators"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/types"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/validators"
 )
 
 // ILoginRouter interface

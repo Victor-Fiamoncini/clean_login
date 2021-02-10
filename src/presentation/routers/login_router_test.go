@@ -4,16 +4,15 @@ import (
 	"testing"
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/mocks"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/routers"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/validators"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/validators"
 	"github.com/stretchr/testify/assert"
 )
 
 func makeSut() (routers.ILoginRouter, usecases.IAuthUseCase, validators.IEmailValidator) {
-	authUseCaseSpy := mocks.NewAuthUseCaseSpy()
-	emailValidatorSpy := mocks.NewEmailValidatorSpy()
+	authUseCaseSpy := usecases.NewAuthUseCaseSpy()
+	emailValidatorSpy := validators.NewEmailValidatorSpy()
 
 	authUseCaseSpy.SetAccessToken("valid_token")
 	emailValidatorSpy.SetIsEmailValid(true)
