@@ -9,9 +9,9 @@ type InvalidParamError struct {
 }
 
 // NewInvalidParamError func
-func NewInvalidParamError() IDefaultError {
+func NewInvalidParamError(param string) IDefaultError {
 	return &InvalidParamError{
-		Error: errors.New("InvalidParam"),
+		Error: errors.New("Invalid param: " + param),
 		Name:  "InvalidParamError",
 	}
 }

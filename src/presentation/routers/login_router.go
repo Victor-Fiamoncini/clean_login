@@ -6,10 +6,9 @@ import (
 	custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/validators"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/types"
 )
-
-// var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 // ILoginRouter interface
 type ILoginRouter interface {
@@ -18,13 +17,15 @@ type ILoginRouter interface {
 
 // LoginRouter struct
 type LoginRouter struct {
-	AuthUseCase usecases.IAuthUseCase
+	AuthUseCase    usecases.IAuthUseCase
+	EmailValidator validators.IEmailValidator
 }
 
 // NewLoginRouter func
-func NewLoginRouter(authUseCase usecases.IAuthUseCase) ILoginRouter {
+func NewLoginRouter(authUseCase usecases.IAuthUseCase, emailValidator validators.IEmailValidator) ILoginRouter {
 	return &LoginRouter{
-		AuthUseCase: authUseCase,
+		AuthUseCase:    authUseCase,
+		EmailValidator: emailValidator,
 	}
 }
 
@@ -43,9 +44,9 @@ func (lr *LoginRouter) Route(httpRequest *helpers.HTTPRequest) helpers.IHTTPResp
 		return httpResponse.BadRequest(custom_errors.NewMissingParamError("email"))
 	}
 
-	// if !emailRegex.MatchString(email) {
-	// 	return httpResponse.BadRequest("email")
-	// }
+	if !lr.EmailValidator.Run(email) {
+		return httpResponse.BadRequest(custom_errors.NewInvalidParamError("email"))
+	}
 
 	if password == "" {
 		return httpResponse.BadRequest(custom_errors.NewMissingParamError("password"))

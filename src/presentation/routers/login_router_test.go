@@ -7,19 +7,22 @@ import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/mocks"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/routers"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/validators"
 	"github.com/stretchr/testify/assert"
 )
 
-func makeSut() (routers.ILoginRouter, usecases.IAuthUseCase) {
+func makeSut() (routers.ILoginRouter, usecases.IAuthUseCase, validators.IEmailValidator) {
 	authUseCaseSpy := mocks.NewAuthUseCaseSpy()
+	emailValidatorSpy := mocks.NewEmailValidatorSpy()
 
 	authUseCaseSpy.SetAccessToken("valid_token")
+	emailValidatorSpy.SetIsEmailValid(true)
 
-	return routers.NewLoginRouter(authUseCaseSpy), authUseCaseSpy
+	return routers.NewLoginRouter(authUseCaseSpy, emailValidatorSpy), authUseCaseSpy, emailValidatorSpy
 }
 
 func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
-	sut, _ := makeSut()
+	sut, _, _ := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -37,7 +40,7 @@ func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
-	sut, _ := makeSut()
+	sut, _, _ := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -55,7 +58,7 @@ func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
-	sut, _ := makeSut()
+	sut, _, _ := makeSut()
 
 	httpResponse := sut.Route(nil)
 
@@ -64,7 +67,7 @@ func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
-	sut, _ := makeSut()
+	sut, _, _ := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{}
 
@@ -75,7 +78,7 @@ func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
 }
 
 func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
-	sut, authUseCaseSpy := makeSut()
+	sut, authUseCaseSpy, _ := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -94,7 +97,7 @@ func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
 }
 
 func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
-	sut, authUseCaseSpy := makeSut()
+	sut, authUseCaseSpy, _ := makeSut()
 
 	authUseCaseSpy.SetAccessToken("")
 
@@ -115,7 +118,7 @@ func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
 }
 
 func TestShouldReturn500IfNoAuthUseCaseIsProvided(t *testing.T) {
-	sut := routers.NewLoginRouter(nil)
+	sut := routers.NewLoginRouter(nil, nil)
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -134,7 +137,7 @@ func TestShouldReturn500IfNoAuthUseCaseIsProvided(t *testing.T) {
 }
 
 func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {
-	sut, authUseCaseSpy := makeSut()
+	sut, authUseCaseSpy, _ := makeSut()
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -152,21 +155,23 @@ func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {
 	assert.Equal(t, httpResponse.GetBody()["AccessToken"], authUseCaseSpy.GetAccessToken())
 }
 
-// func TestShouldReturn400IfAnInvalidEmailIsProvided(t *testing.T) {
-// 	sut, _ := makeSut()
+func TestShouldReturn400IfAnInvalidEmailIsProvided(t *testing.T) {
+	sut, _, emailValidatorSpy := makeSut()
 
-// 	httpRequest := &helpers.HTTPRequest{
-// 		Body: struct {
-// 			Email    string
-// 			Password string
-// 		}{
-// 			Email:    "invalid_email@mail.com",
-// 			Password: "any_password",
-// 		},
-// 	}
+	emailValidatorSpy.SetIsEmailValid(false)
 
-// 	httpResponse := sut.Route(httpRequest)
+	httpRequest := &helpers.HTTPRequest{
+		Body: struct {
+			Email    string
+			Password string
+		}{
+			Email:    "invalid_email@mail.com",
+			Password: "any_password",
+		},
+	}
 
-// 	assert.Equal(t, 400, httpResponse.StatusCode)
-// 	assert.Equal(t, "Missing param: email", httpResponse.ErrorObject.Error())
-// }
+	httpResponse := sut.Route(httpRequest)
+
+	assert.Equal(t, 400, httpResponse.GetStatusCode())
+	assert.Equal(t, "Invalid param: email", httpResponse.GetErrorObject().Error())
+}
