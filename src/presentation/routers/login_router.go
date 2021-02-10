@@ -6,37 +6,38 @@ import (
 	custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/types"
 )
 
 // var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 // ILoginRouter interface
 type ILoginRouter interface {
-	Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse
+	Route(httpRequest *helpers.HTTPRequest) helpers.IHTTPResponse
 }
 
 // LoginRouter struct
 type LoginRouter struct {
-	AuthUseCase *usecases.AuthUseCase
+	AuthUseCase usecases.IAuthUseCase
 }
 
 // NewLoginRouter func
-func NewLoginRouter(authUseCase *usecases.AuthUseCase) *LoginRouter {
+func NewLoginRouter(authUseCase usecases.IAuthUseCase) ILoginRouter {
 	return &LoginRouter{
 		AuthUseCase: authUseCase,
 	}
 }
 
 // Route LoginRouter method
-func (lr *LoginRouter) Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse {
+func (lr *LoginRouter) Route(httpRequest *helpers.HTTPRequest) helpers.IHTTPResponse {
 	httpResponse := helpers.NewHTTPResponse()
 
-	if hr == nil || reflect.ValueOf(hr.Body).IsZero() || lr.AuthUseCase == nil {
+	if httpRequest == nil || reflect.ValueOf(httpRequest.Body).IsZero() || lr.AuthUseCase == nil {
 		return httpResponse.ServerError()
 	}
 
-	email := hr.Body.Email
-	password := hr.Body.Password
+	email := httpRequest.Body.Email
+	password := httpRequest.Body.Password
 
 	if email == "" {
 		return httpResponse.BadRequest(custom_errors.NewMissingParamError("email"))
@@ -56,7 +57,7 @@ func (lr *LoginRouter) Route(hr *helpers.HTTPRequest) *helpers.HTTPResponse {
 		return httpResponse.Unauthorized()
 	}
 
-	responseBody := make(map[string]interface{})
+	responseBody := make(types.Map)
 	responseBody["AccessToken"] = accessToken
 
 	return httpResponse.Success(responseBody)

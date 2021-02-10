@@ -10,11 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func makeSut() (*routers.LoginRouter, *usecases.AuthUseCase) {
-	// Convert a spy class to production class
-	authUseCaseSpy := (*usecases.AuthUseCase)(mocks.NewAuthUseCaseSpy())
+func makeSut() (routers.ILoginRouter, usecases.IAuthUseCase) {
+	authUseCaseSpy := mocks.NewAuthUseCaseSpy()
 
-	authUseCaseSpy.AccessToken = "valid_token"
+	authUseCaseSpy.SetAccessToken("valid_token")
 
 	return routers.NewLoginRouter(authUseCaseSpy), authUseCaseSpy
 }
@@ -33,8 +32,8 @@ func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
 
 	httpResponse := sut.Route(httpRequest)
 
-	assert.Equal(t, 400, httpResponse.StatusCode)
-	assert.Equal(t, "Missing param: email", httpResponse.ErrorObject.Error())
+	assert.Equal(t, 400, httpResponse.GetStatusCode())
+	assert.Equal(t, "Missing param: email", httpResponse.GetErrorObject().Error())
 }
 
 func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
@@ -51,9 +50,8 @@ func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
 
 	httpResponse := sut.Route(httpRequest)
 
-	assert.Equal(t, 400, httpResponse.StatusCode)
-	assert.Equal(t, "Missing param: password", httpResponse.ErrorObject.Error())
-
+	assert.Equal(t, 400, httpResponse.GetStatusCode())
+	assert.Equal(t, "Missing param: password", httpResponse.GetErrorObject().Error())
 }
 
 func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
@@ -61,8 +59,8 @@ func TestShouldReturn500IfNoHTTPRequestIsProvided(t *testing.T) {
 
 	httpResponse := sut.Route(nil)
 
-	assert.Equal(t, 500, httpResponse.StatusCode)
-	assert.Equal(t, "Internal Error", httpResponse.ErrorObject.Error())
+	assert.Equal(t, 500, httpResponse.GetStatusCode())
+	assert.Equal(t, "Internal Error", httpResponse.GetErrorObject().Error())
 }
 
 func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
@@ -72,9 +70,8 @@ func TestShouldReturn500IfHTTPRequestHasNoBody(t *testing.T) {
 
 	httpResponse := sut.Route(httpRequest)
 
-	assert.Equal(t, 500, httpResponse.StatusCode)
-	assert.Equal(t, "Internal Error", httpResponse.ErrorObject.Error())
-
+	assert.Equal(t, 500, httpResponse.GetStatusCode())
+	assert.Equal(t, "Internal Error", httpResponse.GetErrorObject().Error())
 }
 
 func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
@@ -92,14 +89,14 @@ func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
 
 	sut.Route(httpRequest)
 
-	assert.Equal(t, httpRequest.Body.Email, authUseCaseSpy.Email)
-	assert.Equal(t, httpRequest.Body.Password, authUseCaseSpy.Password)
+	assert.Equal(t, httpRequest.Body.Email, authUseCaseSpy.GetEmail())
+	assert.Equal(t, httpRequest.Body.Password, authUseCaseSpy.GetPassword())
 }
 
 func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
 	sut, authUseCaseSpy := makeSut()
 
-	authUseCaseSpy.AccessToken = ""
+	authUseCaseSpy.SetAccessToken("")
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
@@ -113,8 +110,8 @@ func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
 
 	httpResponse := sut.Route(httpRequest)
 
-	assert.Equal(t, 401, httpResponse.StatusCode)
-	assert.Equal(t, "Unauthorized", httpResponse.ErrorObject.Error())
+	assert.Equal(t, 401, httpResponse.GetStatusCode())
+	assert.Equal(t, "Unauthorized", httpResponse.GetErrorObject().Error())
 }
 
 func TestShouldReturn500IfNoAuthUseCaseIsProvided(t *testing.T) {
@@ -132,8 +129,8 @@ func TestShouldReturn500IfNoAuthUseCaseIsProvided(t *testing.T) {
 
 	httpResponse := sut.Route(httpRequest)
 
-	assert.Equal(t, 500, httpResponse.StatusCode)
-	assert.Equal(t, "Internal Error", httpResponse.ErrorObject.Error())
+	assert.Equal(t, 500, httpResponse.GetStatusCode())
+	assert.Equal(t, "Internal Error", httpResponse.GetErrorObject().Error())
 }
 
 func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {
@@ -151,8 +148,8 @@ func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {
 
 	httpResponse := sut.Route(httpRequest)
 
-	assert.Equal(t, 200, httpResponse.StatusCode)
-	assert.Equal(t, httpResponse.Body["AccessToken"], authUseCaseSpy.AccessToken)
+	assert.Equal(t, 200, httpResponse.GetStatusCode())
+	assert.Equal(t, httpResponse.GetBody()["AccessToken"], authUseCaseSpy.GetAccessToken())
 }
 
 // func TestShouldReturn400IfAnInvalidEmailIsProvided(t *testing.T) {

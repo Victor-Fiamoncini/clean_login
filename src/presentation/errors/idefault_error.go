@@ -7,9 +7,3 @@ type IDefaultError interface {
 	GetError() error
 	SetError(err error)
 }
-
-// DefaultError struct
-type DefaultError struct {
-	Name  string
-	Error error
-}

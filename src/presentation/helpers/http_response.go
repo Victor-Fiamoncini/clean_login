@@ -2,11 +2,21 @@ package helpers
 
 import (
 	custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/errors"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/types"
 )
 
 // IHTTPResponse interface
 type IHTTPResponse interface {
-	Success() *HTTPResponse
+	GetStatusCode() int
+	SetStatusCode(statusCode int)
+	GetErrorObject() error
+	SetErrorObject(errorObject error)
+	GetErrorName() string
+	SetErrorName(errorName string)
+	GetBody() types.Map
+	SetBody(body types.Map)
+
+	Success(data types.Map) *HTTPResponse
 	BadRequest(err custom_errors.IDefaultError) *HTTPResponse
 	Unauthorized() *HTTPResponse
 	ServerError() *HTTPResponse
@@ -17,52 +27,92 @@ type HTTPResponse struct {
 	StatusCode  int
 	ErrorObject error
 	ErrorName   string
-	Body        map[string]interface{}
+	Body        types.Map
 }
 
 // NewHTTPResponse func
-func NewHTTPResponse() *HTTPResponse {
+func NewHTTPResponse() IHTTPResponse {
 	return &HTTPResponse{}
 }
 
-// Success HTTPResponse method
-func (hres *HTTPResponse) Success(data map[string]interface{}) *HTTPResponse {
-	hres.StatusCode = 200
-	hres.Body = data
+// GetStatusCode HTTPResponse method
+func (hr *HTTPResponse) GetStatusCode() int {
+	return hr.StatusCode
+}
 
-	return hres
+// SetStatusCode HTTPResponse method
+func (hr *HTTPResponse) SetStatusCode(statusCode int) {
+	hr.StatusCode = statusCode
+}
+
+// GetErrorObject HTTPResponse method
+func (hr *HTTPResponse) GetErrorObject() error {
+	return hr.ErrorObject
+}
+
+// SetErrorObject HTTPResponse method
+func (hr *HTTPResponse) SetErrorObject(errorObject error) {
+	hr.ErrorObject = errorObject
+}
+
+// GetErrorName HTTPResponse method
+func (hr *HTTPResponse) GetErrorName() string {
+	return hr.ErrorName
+}
+
+// SetErrorName HTTPResponse method
+func (hr *HTTPResponse) SetErrorName(errorName string) {
+	hr.ErrorName = errorName
+}
+
+// GetBody HTTPResponse method
+func (hr *HTTPResponse) GetBody() types.Map {
+	return hr.Body
+}
+
+// SetBody HTTPResponse method
+func (hr *HTTPResponse) SetBody(body types.Map) {
+	hr.Body = body
+}
+
+// Success HTTPResponse method
+func (hr *HTTPResponse) Success(data types.Map) *HTTPResponse {
+	hr.StatusCode = 200
+	hr.Body = data
+
+	return hr
 }
 
 // BadRequest HTTPResponse method
-func (hres *HTTPResponse) BadRequest(err custom_errors.IDefaultError) *HTTPResponse {
-	hres.StatusCode = 400
+func (hr *HTTPResponse) BadRequest(err custom_errors.IDefaultError) *HTTPResponse {
+	hr.StatusCode = 400
 
-	hres.ErrorObject = err.GetError()
-	hres.ErrorName = err.GetName()
+	hr.ErrorObject = err.GetError()
+	hr.ErrorName = err.GetName()
 
-	return hres
+	return hr
 }
 
 // Unauthorized HTTPResponse method
-func (hres *HTTPResponse) Unauthorized() *HTTPResponse {
-	hres.StatusCode = 401
+func (hr *HTTPResponse) Unauthorized() *HTTPResponse {
+	hr.StatusCode = 401
 
 	newUnauthorizedError := custom_errors.NewUnauthorizedError()
 
-	hres.ErrorObject = newUnauthorizedError.GetError()
-	hres.ErrorName = newUnauthorizedError.GetName()
+	hr.ErrorObject = newUnauthorizedError.GetError()
+	hr.ErrorName = newUnauthorizedError.GetName()
 
-	return hres
+	return hr
 }
 
 // ServerError HTTPResponse method
-func (hres *HTTPResponse) ServerError() *HTTPResponse {
-	hres.StatusCode = 500
+func (hr *HTTPResponse) ServerError() *HTTPResponse {
+	hr.StatusCode = 500
 
 	newServerError := custom_errors.NewServerError()
 
-	hres.ErrorObject = newServerError.GetError()
-	hres.ErrorName = newServerError.GetName()
+	hr.ErrorObject = newServerError.GetError()
+	hr.ErrorName = newServerError.GetName()
 
-	return hres
+	return hr
 }

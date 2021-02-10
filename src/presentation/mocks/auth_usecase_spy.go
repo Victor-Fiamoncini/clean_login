@@ -1,9 +1,6 @@
 package mocks
 
-// IAuthUseCaseSpy interface
-type IAuthUseCaseSpy interface {
-	Auth(email string, password string) string
-}
+import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/usecases"
 
 // AuthUseCaseSpy struct
 type AuthUseCaseSpy struct {
@@ -13,14 +10,44 @@ type AuthUseCaseSpy struct {
 }
 
 // NewAuthUseCaseSpy func
-func NewAuthUseCaseSpy() *AuthUseCaseSpy {
+func NewAuthUseCaseSpy() usecases.IAuthUseCase {
 	return &AuthUseCaseSpy{}
 }
 
-// Auth AuthUseCaseSpy method
-func (auc *AuthUseCaseSpy) Auth(email string, password string) string {
-	auc.Email = email
-	auc.Password = password
+// GetEmail AuthUseCaseSpy method
+func (aucs *AuthUseCaseSpy) GetEmail() string {
+	return aucs.Email
+}
 
-	return auc.AccessToken
+// SetEmail AuthUseCaseSpy method
+func (aucs *AuthUseCaseSpy) SetEmail(email string) {
+	aucs.Email = email
+}
+
+// GetPassword AuthUseCaseSpy method
+func (aucs *AuthUseCaseSpy) GetPassword() string {
+	return aucs.Password
+}
+
+// SetPassword AuthUseCaseSpy method
+func (aucs *AuthUseCaseSpy) SetPassword(password string) {
+	aucs.Password = password
+}
+
+// GetAccessToken AuthUseCaseSpy method
+func (aucs *AuthUseCaseSpy) GetAccessToken() string {
+	return aucs.AccessToken
+}
+
+// SetAccessToken AuthUseCaseSpy method
+func (aucs *AuthUseCaseSpy) SetAccessToken(accessToken string) {
+	aucs.AccessToken = accessToken
+}
+
+// Auth AuthUseCaseSpy method
+func (aucs *AuthUseCaseSpy) Auth(email string, password string) string {
+	aucs.Email = email
+	aucs.Password = password
+
+	return aucs.AccessToken
 }
