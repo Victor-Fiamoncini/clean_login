@@ -1,4 +1,4 @@
-package usecases
+package authusecase
 
 // AuthUseCaseSpy struct
 type AuthUseCaseSpy struct {

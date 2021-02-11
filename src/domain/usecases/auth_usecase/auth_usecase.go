@@ -1,17 +1,17 @@
-package usecases
+package authusecase
 
-import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories"
+import luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 
 // AuthUseCase struct
 type AuthUseCase struct {
 	Email                     string
 	Password                  string
 	AccessToken               string
-	LoadUserByEmailRepository repositories.ILoadUserByEmailRepository
+	LoadUserByEmailRepository luber.ILoadUserByEmailRepository
 }
 
 // NewAuthUseCase func
-func NewAuthUseCase(loadUserByEmailRepository repositories.ILoadUserByEmailRepository) IAuthUseCase {
+func NewAuthUseCase(loadUserByEmailRepository luber.ILoadUserByEmailRepository) IAuthUseCase {
 	return &AuthUseCase{
 		LoadUserByEmailRepository: loadUserByEmailRepository,
 	}
@@ -51,6 +51,8 @@ func (auc *AuthUseCase) SetAccessToken(accessToken string) {
 func (auc *AuthUseCase) Auth(email string, password string) string {
 	auc.Email = email
 	auc.Password = password
+
+	auc.LoadUserByEmailRepository.Load(email)
 
 	return auc.AccessToken
 }

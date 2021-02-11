@@ -3,15 +3,15 @@ package routers_test
 import (
 	"testing"
 
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases"
+	auc "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/routers"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/validators"
 	"github.com/stretchr/testify/assert"
 )
 
-func makeSut() (routers.ILoginRouter, usecases.IAuthUseCase, validators.IEmailValidator) {
-	authUseCaseSpy := usecases.NewAuthUseCaseSpy()
+func makeSut() (routers.ILoginRouter, auc.IAuthUseCase, validators.IEmailValidator) {
+	authUseCaseSpy := auc.NewAuthUseCaseSpy()
 	emailValidatorSpy := validators.NewEmailValidatorSpy()
 
 	authUseCaseSpy.SetAccessToken("valid_token")

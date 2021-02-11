@@ -3,7 +3,7 @@ package routers
 import (
 	"reflect"
 
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases"
+	auc "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/types"
@@ -17,12 +17,12 @@ type ILoginRouter interface {
 
 // LoginRouter struct
 type LoginRouter struct {
-	AuthUseCase    usecases.IAuthUseCase
+	AuthUseCase    auc.IAuthUseCase
 	EmailValidator validators.IEmailValidator
 }
 
 // NewLoginRouter func
-func NewLoginRouter(authUseCase usecases.IAuthUseCase, emailValidator validators.IEmailValidator) ILoginRouter {
+func NewLoginRouter(authUseCase auc.IAuthUseCase, emailValidator validators.IEmailValidator) ILoginRouter {
 	return &LoginRouter{
 		AuthUseCase:    authUseCase,
 		EmailValidator: emailValidator,

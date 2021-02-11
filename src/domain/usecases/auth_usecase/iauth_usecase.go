@@ -1,4 +1,4 @@
-package usecases
+package authusecase
 
 // IAuthUseCase interface
 type IAuthUseCase interface {
