@@ -13,3 +13,11 @@ func TestShouldReturnTrueIfValidatorReturnsTrue(t *testing.T) {
 
 	assert.Equal(t, true, isEmailValid)
 }
+
+func TestShouldReturnFalseIfValidatorReturnsFalse(t *testing.T) {
+	sut := NewEmailValidator()
+
+	isEmailValid := sut.Run("invalid_email")
+
+	assert.Equal(t, false, isEmailValid)
+}

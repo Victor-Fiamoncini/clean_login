@@ -1,6 +1,9 @@
 package validators
 
-import "regexp"
+import (
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
+)
 
 // EmailValidator struct
 type EmailValidator struct {
@@ -24,7 +27,7 @@ func (ev *EmailValidator) SetIsEmailValid(isEmailValid bool) {
 
 // Run NewEmailValidator method
 func (ev *EmailValidator) Run(email string) bool {
-	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	err := validation.Validate(email, is.Email)
 
-	return emailRegex.MatchString(email)
+	return err == nil
 }
