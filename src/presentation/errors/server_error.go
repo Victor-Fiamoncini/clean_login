@@ -1,6 +1,10 @@
 package errors
 
-import "errors"
+import (
+	"errors"
+
+	global_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/errors"
+)
 
 // ServerError struct
 type ServerError struct {
@@ -9,7 +13,7 @@ type ServerError struct {
 }
 
 // NewServerError func
-func NewServerError() IDefaultError {
+func NewServerError() global_custom_errors.IDefaultError {
 	return &ServerError{
 		Error: errors.New("Internal Error"),
 		Name:  "ServerError",

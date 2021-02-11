@@ -1,26 +1,10 @@
 package helpers
 
 import (
+	global_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/errors"
 	custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/types"
 )
-
-// IHTTPResponse interface
-type IHTTPResponse interface {
-	GetStatusCode() int
-	SetStatusCode(statusCode int)
-	GetErrorObject() error
-	SetErrorObject(errorObject error)
-	GetErrorName() string
-	SetErrorName(errorName string)
-	GetBody() types.Map
-	SetBody(body types.Map)
-
-	Success(data types.Map) *HTTPResponse
-	BadRequest(err custom_errors.IDefaultError) *HTTPResponse
-	Unauthorized() *HTTPResponse
-	ServerError() *HTTPResponse
-}
 
 // HTTPResponse struct
 type HTTPResponse struct {
@@ -84,7 +68,7 @@ func (hr *HTTPResponse) Success(data types.Map) *HTTPResponse {
 }
 
 // BadRequest HTTPResponse method
-func (hr *HTTPResponse) BadRequest(err custom_errors.IDefaultError) *HTTPResponse {
+func (hr *HTTPResponse) BadRequest(err global_custom_errors.IDefaultError) *HTTPResponse {
 	hr.StatusCode = 400
 
 	hr.ErrorObject = err.GetError()
