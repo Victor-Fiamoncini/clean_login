@@ -1,9 +1,9 @@
 package helpers
 
 import (
-	global_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/errors"
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/types"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/types"
 )
 
 // IHTTPResponse interface
@@ -18,7 +18,7 @@ type IHTTPResponse interface {
 	SetBody(body types.Map)
 
 	Success(data types.Map) *HTTPResponse
-	BadRequest(err global_custom_errors.IDefaultError) *HTTPResponse
+	BadRequest(err shared_custom_errors.IDefaultError) *HTTPResponse
 	Unauthorized() *HTTPResponse
 	ServerError() *HTTPResponse
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/routers"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/validators"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/validators"
 	"github.com/stretchr/testify/assert"
 )
 

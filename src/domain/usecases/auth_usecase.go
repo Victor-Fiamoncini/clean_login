@@ -1,15 +1,20 @@
 package usecases
 
+import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories"
+
 // AuthUseCase struct
 type AuthUseCase struct {
-	Email       string
-	Password    string
-	AccessToken string
+	Email                     string
+	Password                  string
+	AccessToken               string
+	LoadUserByEmailRepository repositories.ILoadUserByEmailRepository
 }
 
 // NewAuthUseCase func
-func NewAuthUseCase() IAuthUseCase {
-	return &AuthUseCase{}
+func NewAuthUseCase(loadUserByEmailRepository repositories.ILoadUserByEmailRepository) IAuthUseCase {
+	return &AuthUseCase{
+		LoadUserByEmailRepository: loadUserByEmailRepository,
+	}
 }
 
 // GetEmail AuthUseCase method

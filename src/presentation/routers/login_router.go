@@ -4,10 +4,10 @@ import (
 	"reflect"
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases"
-	global_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/types"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/validators"
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/types"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/validators"
 )
 
 // ILoginRouter interface
@@ -41,15 +41,15 @@ func (lr *LoginRouter) Route(httpRequest *helpers.HTTPRequest) helpers.IHTTPResp
 	password := httpRequest.Body.Password
 
 	if email == "" {
-		return httpResponse.BadRequest(global_custom_errors.NewMissingParamError("email"))
+		return httpResponse.BadRequest(shared_custom_errors.NewMissingParamError("email"))
 	}
 
 	if !lr.EmailValidator.Run(email) {
-		return httpResponse.BadRequest(global_custom_errors.NewInvalidParamError("email"))
+		return httpResponse.BadRequest(shared_custom_errors.NewInvalidParamError("email"))
 	}
 
 	if password == "" {
-		return httpResponse.BadRequest(global_custom_errors.NewMissingParamError("password"))
+		return httpResponse.BadRequest(shared_custom_errors.NewMissingParamError("password"))
 	}
 
 	accessToken := lr.AuthUseCase.Auth(email, password)

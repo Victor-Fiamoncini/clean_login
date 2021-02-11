@@ -3,7 +3,7 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/validators"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/validators"
 	"github.com/stretchr/testify/assert"
 )
 

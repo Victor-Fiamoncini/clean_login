@@ -1,9 +1,9 @@
 package helpers
 
 import (
-	global_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/errors"
 	custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/errors"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/types"
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/types"
 )
 
 // HTTPResponse struct
@@ -68,7 +68,7 @@ func (hr *HTTPResponse) Success(data types.Map) *HTTPResponse {
 }
 
 // BadRequest HTTPResponse method
-func (hr *HTTPResponse) BadRequest(err global_custom_errors.IDefaultError) *HTTPResponse {
+func (hr *HTTPResponse) BadRequest(err shared_custom_errors.IDefaultError) *HTTPResponse {
 	hr.StatusCode = 400
 
 	hr.ErrorObject = err.GetError()

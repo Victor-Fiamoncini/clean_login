@@ -3,7 +3,7 @@ package errors
 import (
 	"errors"
 
-	global_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/errors"
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 )
 
 // UnauthorizedError struct
@@ -13,7 +13,7 @@ type UnauthorizedError struct {
 }
 
 // NewUnauthorizedError func
-func NewUnauthorizedError() global_custom_errors.IDefaultError {
+func NewUnauthorizedError() shared_custom_errors.IDefaultError {
 	return &UnauthorizedError{
 		Error: errors.New("Unauthorized"),
 		Name:  "UnauthorizedError",
