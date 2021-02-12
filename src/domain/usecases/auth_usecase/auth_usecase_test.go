@@ -65,3 +65,13 @@ func TestShouldCallTokenGeneratorWithCorrectUserID(t *testing.T) {
 
 	assert.Equal(t, loadUserByEmailRepositorySpy.GetUser().GetID(), tokenGeneratorSpy.GetUserID())
 }
+
+func TestShouldReturnAnAccessTokenIfCorrectCredentialsAreProvided(t *testing.T) {
+	sut, _, _, tokenGeneratorSpy := makeSut()
+
+	accessToken := sut.Auth("valid_email@mail.com", "valid_password")
+
+	assert.Equal(t, tokenGeneratorSpy.GetAccessToken(), accessToken)
+	assert.NotNil(t, accessToken)
+	assert.NotEmpty(t, accessToken)
+}

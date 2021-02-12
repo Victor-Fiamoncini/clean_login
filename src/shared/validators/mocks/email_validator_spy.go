@@ -1,4 +1,6 @@
-package validators
+package mocks
+
+import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/validators"
 
 // EmailValidatorSpy struct
 type EmailValidatorSpy struct {
@@ -6,7 +8,7 @@ type EmailValidatorSpy struct {
 }
 
 // NewEmailValidatorSpy func
-func NewEmailValidatorSpy() IEmailValidator {
+func NewEmailValidatorSpy() validators.IEmailValidator {
 	return &EmailValidatorSpy{}
 }
 
@@ -22,7 +24,5 @@ func (evs *EmailValidatorSpy) SetIsEmailValid(isEmailValid bool) {
 
 // Run NewEmailValidatorSpy method
 func (evs *EmailValidatorSpy) Run(email string) bool {
-	// var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-
 	return evs.IsEmailValid
 }

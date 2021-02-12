@@ -57,22 +57,11 @@ func (auc *AuthUseCase) SetAccessToken(accessToken string) {
 
 // Auth AuthUseCase method
 func (auc *AuthUseCase) Auth(email string, password string) string {
-	auc.Email = email
-	auc.Password = password
-
 	user := auc.LoadUserByEmailRepository.Load(email)
 
-	if user == nil {
+	if user == nil && !auc.Encrypter.Compare(password, user.GetPassword()) {
 		return ""
 	}
 
-	isValid := auc.Encrypter.Compare(password, user.GetPassword())
-
-	if !isValid {
-		return ""
-	}
-
-	auc.TokenGenerator.Generate(user.GetID())
-
-	return auc.AccessToken
+	return auc.TokenGenerator.Generate(user.GetID())
 }

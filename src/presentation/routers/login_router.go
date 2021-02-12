@@ -10,11 +10,6 @@ import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/validators"
 )
 
-// ILoginRouter interface
-type ILoginRouter interface {
-	Route(httpRequest *helpers.HTTPRequest) helpers.IHTTPResponse
-}
-
 // LoginRouter struct
 type LoginRouter struct {
 	AuthUseCase    auc.IAuthUseCase
