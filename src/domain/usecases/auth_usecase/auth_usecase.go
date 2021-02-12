@@ -2,6 +2,7 @@ package authusecase
 
 import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encrypter"
+	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/token_generator"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 )
 
@@ -12,13 +13,15 @@ type AuthUseCase struct {
 	AccessToken               string
 	LoadUserByEmailRepository luber.ILoadUserByEmailRepository
 	Encrypter                 encrypter.IEncrypter
+	TokenGenerator            token_generator.ITokenGenerator
 }
 
 // NewAuthUseCase func
-func NewAuthUseCase(loadUserByEmailRepository luber.ILoadUserByEmailRepository, encrypter encrypter.IEncrypter) IAuthUseCase {
+func NewAuthUseCase(loadUserByEmailRepository luber.ILoadUserByEmailRepository, encrypter encrypter.IEncrypter, tokenGenerator token_generator.ITokenGenerator) IAuthUseCase {
 	return &AuthUseCase{
 		LoadUserByEmailRepository: loadUserByEmailRepository,
 		Encrypter:                 encrypter,
+		TokenGenerator:            tokenGenerator,
 	}
 }
 
@@ -68,6 +71,8 @@ func (auc *AuthUseCase) Auth(email string, password string) string {
 	if !isValid {
 		return ""
 	}
+
+	auc.TokenGenerator.Generate(user.GetID())
 
 	return auc.AccessToken
 }

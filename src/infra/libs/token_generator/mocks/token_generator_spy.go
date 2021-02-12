@@ -6,7 +6,8 @@ import (
 
 // TokenGeneratorSpy struct
 type TokenGeneratorSpy struct {
-	UserID string
+	UserID      string
+	AccessToken string
 }
 
 // NewTokenGeneratorSpy func
@@ -22,4 +23,21 @@ func (tgs *TokenGeneratorSpy) GetUserID() string {
 // SetUserID TokenGeneratorSpy method
 func (tgs *TokenGeneratorSpy) SetUserID(userID string) {
 	tgs.UserID = userID
+}
+
+// GetAccessToken TokenGeneratorSpy method
+func (tgs *TokenGeneratorSpy) GetAccessToken() string {
+	return tgs.AccessToken
+}
+
+// SetAccessToken TokenGeneratorSpy method
+func (tgs *TokenGeneratorSpy) SetAccessToken(accessToken string) {
+	tgs.AccessToken = accessToken
+}
+
+// Generate TokenGeneratorSpy method
+func (tgs *TokenGeneratorSpy) Generate(userID string) string {
+	tgs.UserID = userID
+
+	return tgs.AccessToken
 }
