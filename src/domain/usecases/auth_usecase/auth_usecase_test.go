@@ -40,3 +40,13 @@ func TestShouldCallEncrypterWithCorrectValues(t *testing.T) {
 	assert.Equal(t, "any_password", encrypterSpy.GetPassword())
 	assert.Equal(t, loadUserByEmailRepositorySpy.GetUser().GetPassword(), encrypterSpy.GetHashedPassword())
 }
+
+func TestShouldReturnAnEmptyTokenIfAnInvalidPasswordIsProvided(t *testing.T) {
+	sut, _, encrypterSpy := makeSut()
+
+	encrypterSpy.SetIsValid(false)
+
+	accessToken := sut.Auth("valid_email@mail.com", "invalid_password")
+
+	assert.Empty(t, "", accessToken)
+}

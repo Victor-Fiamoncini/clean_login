@@ -6,6 +6,7 @@ import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encr
 type EncrypterSpy struct {
 	Password       string
 	HashedPassword string
+	IsValid        bool
 }
 
 // NewEncrypterSpy func
@@ -33,10 +34,20 @@ func (es *EncrypterSpy) SetHashedPassword(hashedPassword string) {
 	es.HashedPassword = hashedPassword
 }
 
+// GetIsValid EncrypterSpy method
+func (es *EncrypterSpy) GetIsValid() bool {
+	return es.IsValid
+}
+
+// SetIsValid EncrypterSpy method
+func (es *EncrypterSpy) SetIsValid(isValid bool) {
+	es.IsValid = isValid
+}
+
 // Compare EncrypterSpy method
 func (es *EncrypterSpy) Compare(password string, hashedPassword string) bool {
 	es.Password = password
 	es.HashedPassword = hashedPassword
 
-	return true
+	return es.IsValid
 }

@@ -6,6 +6,8 @@ type IEncrypter interface {
 	SetPassword(password string)
 	GetHashedPassword() string
 	SetHashedPassword(hashedPassword string)
+	GetIsValid() bool
+	SetIsValid(hashedPassword bool)
 
 	Compare(password string, hashedPassword string) bool
 }

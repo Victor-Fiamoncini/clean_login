@@ -63,7 +63,11 @@ func (auc *AuthUseCase) Auth(email string, password string) string {
 		return ""
 	}
 
-	auc.Encrypter.Compare(password, user.GetPassword())
+	isValid := auc.Encrypter.Compare(password, user.GetPassword())
+
+	if !isValid {
+		return ""
+	}
 
 	return auc.AccessToken
 }
