@@ -3,6 +3,7 @@ package authusecase_test
 import (
 	"testing"
 
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
 	usecases "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
 	encrypter "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encrypter"
 	encrypter_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encrypter/mocks"
@@ -15,7 +16,12 @@ func makeSut() (usecases.IAuthUseCase, luber.ILoadUserByEmailRepository, encrypt
 	loadUserByEmailRepositorySpy := luber_mocks.NewLoadUserByEmailRepositorySpy()
 	encrypterSpy := encrypter_mocks.NewEncrypterSpy()
 
-	return usecases.NewAuthUseCase(loadUserByEmailRepositorySpy), loadUserByEmailRepositorySpy, encrypterSpy
+	user := entities.NewUser()
+	user.SetPassword("hashed_password")
+
+	loadUserByEmailRepositorySpy.SetUser(user)
+
+	return usecases.NewAuthUseCase(loadUserByEmailRepositorySpy, encrypterSpy), loadUserByEmailRepositorySpy, encrypterSpy
 }
 
 func TestShouldCallLoadUserByEmailRepositoryWithCorrectEmail(t *testing.T) {

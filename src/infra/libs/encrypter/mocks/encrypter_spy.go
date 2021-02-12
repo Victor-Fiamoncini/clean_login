@@ -25,14 +25,18 @@ func (es *EncrypterSpy) SetPassword(password string) {
 
 // GetHashedPassword EncrypterSpy method
 func (es *EncrypterSpy) GetHashedPassword() string {
-	return es.Password
+	return es.HashedPassword
 }
 
 // SetHashedPassword EncrypterSpy method
-func (es *EncrypterSpy) SetHashedPassword(password string) {
-	es.Password = password
+func (es *EncrypterSpy) SetHashedPassword(hashedPassword string) {
+	es.HashedPassword = hashedPassword
 }
 
 // Compare EncrypterSpy method
-func (es *EncrypterSpy) Compare(password string, hashedPassword string) {
+func (es *EncrypterSpy) Compare(password string, hashedPassword string) bool {
+	es.Password = password
+	es.HashedPassword = hashedPassword
+
+	return true
 }

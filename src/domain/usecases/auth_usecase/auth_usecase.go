@@ -1,6 +1,7 @@
 package authusecase
 
 import (
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encrypter"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 )
 
@@ -10,12 +11,14 @@ type AuthUseCase struct {
 	Password                  string
 	AccessToken               string
 	LoadUserByEmailRepository luber.ILoadUserByEmailRepository
+	Encrypter                 encrypter.IEncrypter
 }
 
 // NewAuthUseCase func
-func NewAuthUseCase(loadUserByEmailRepository luber.ILoadUserByEmailRepository) IAuthUseCase {
+func NewAuthUseCase(loadUserByEmailRepository luber.ILoadUserByEmailRepository, encrypter encrypter.IEncrypter) IAuthUseCase {
 	return &AuthUseCase{
 		LoadUserByEmailRepository: loadUserByEmailRepository,
+		Encrypter:                 encrypter,
 	}
 }
 
@@ -59,6 +62,8 @@ func (auc *AuthUseCase) Auth(email string, password string) string {
 	if user == nil {
 		return ""
 	}
+
+	auc.Encrypter.Compare(password, user.GetPassword())
 
 	return auc.AccessToken
 }

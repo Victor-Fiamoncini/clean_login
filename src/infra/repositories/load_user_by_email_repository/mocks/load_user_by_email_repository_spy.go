@@ -40,7 +40,5 @@ func (lubers *LoadUserByEmailRepositorySpy) SetUser(user entities.IUser) {
 func (lubers *LoadUserByEmailRepositorySpy) Load(email string) entities.IUser {
 	lubers.Email = email
 
-	user := entities.NewUser()
-
-	return user
+	return lubers.User
 }
