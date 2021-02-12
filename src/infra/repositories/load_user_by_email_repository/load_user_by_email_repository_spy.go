@@ -1,8 +1,11 @@
-package loaduserbyemailrepository
+package luber
+
+import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
 
 // LoadUserByEmailRepositorySpy struct
 type LoadUserByEmailRepositorySpy struct {
 	Email string
+	User  entities.IUser
 }
 
 // NewLoadUserByEmailRepositorySpy func
@@ -21,6 +24,8 @@ func (lubers *LoadUserByEmailRepositorySpy) SetEmail(email string) {
 }
 
 // Load LoadUserByEmailRepositorySpy method
-func (lubers *LoadUserByEmailRepositorySpy) Load(email string) {
+func (lubers *LoadUserByEmailRepositorySpy) Load(email string) entities.IUser {
 	lubers.Email = email
+
+	return nil
 }
