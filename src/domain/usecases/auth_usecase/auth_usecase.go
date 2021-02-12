@@ -56,9 +56,9 @@ func (auc *AuthUseCase) Auth(email string, password string) string {
 
 	user := auc.LoadUserByEmailRepository.Load(email)
 
-	if user != nil {
-		return auc.AccessToken
+	if user == nil {
+		return ""
 	}
 
-	return ""
+	return auc.AccessToken
 }
