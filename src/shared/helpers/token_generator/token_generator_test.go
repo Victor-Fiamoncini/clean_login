@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/token_generator"
-	"github.com/go-playground/assert/v2"
+	"github.com/stretchr/testify/assert"
 )
 
 func makeSut() token_generator.ITokenGenerator {

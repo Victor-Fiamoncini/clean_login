@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/encrypter"
-	"github.com/go-playground/assert/v2"
+	"github.com/stretchr/testify/assert"
 )
 
 func makeSut() (encrypter.IEncrypter, string) {
@@ -33,7 +33,7 @@ func TestShouldReturnFalseAndAnErrorIfBCryptReturnsFalse(t *testing.T) {
 	passwordIsValid, err := sut.Compare()
 
 	assert.Equal(t, false, passwordIsValid)
-	assert.Equal(t, "Unexpected Error with: Encrypter.Compare()", err.GetError().Error())
+	assert.Equal(t, "Error with: Encrypter.Compare()", err.GetError().Error())
 }
 
 func TestShouldReturnFalseAndAnErrorIfPasswordIsNotProvided(t *testing.T) {

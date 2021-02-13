@@ -62,7 +62,7 @@ func (e *Encrypter) Compare() (bool, shared_custom_errors.IDefaultError) {
 	if bcryptErr != nil {
 		e.IsValid = false
 
-		return false, shared_custom_errors.NewUnexpectedError("Encrypter.Compare()")
+		return false, shared_custom_errors.NewDefaultError("Encrypter.Compare()")
 	}
 
 	e.IsValid = true
