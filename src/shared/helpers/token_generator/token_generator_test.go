@@ -8,7 +8,7 @@ import (
 )
 
 func makeSut() token_generator.ITokenGenerator {
-	tokenGenerator := token_generator.NewTokenGenerator()
+	tokenGenerator := token_generator.NewTokenGenerator("MY_SECRET")
 
 	tokenGenerator.SetUserID("any_id")
 
@@ -29,4 +29,12 @@ func TestShouldReturnANewTokenIfJWTReturnsANewToken(t *testing.T) {
 	token := sut.Generate()
 
 	assert.Equal(t, sut.GetAccessToken(), token)
+}
+
+func TestShouldReturnNullIfRequiredParamsAreNotProvided(t *testing.T) {
+	sut := token_generator.NewTokenGenerator("")
+
+	token := sut.Generate()
+
+	assert.Equal(t, "", token)
 }

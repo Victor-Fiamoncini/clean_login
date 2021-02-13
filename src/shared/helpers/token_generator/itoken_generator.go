@@ -6,6 +6,8 @@ type ITokenGenerator interface {
 	SetUserID(userID string)
 	GetAccessToken() string
 	SetAccessToken(accessToken string)
+	GetSecret() string
+	SetSecret(secret string)
 
 	Generate() string
 }

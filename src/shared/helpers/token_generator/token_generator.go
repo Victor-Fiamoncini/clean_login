@@ -10,11 +10,14 @@ import (
 type TokenGenerator struct {
 	UserID      string
 	AccessToken string
+	Secret      string
 }
 
 // NewTokenGenerator func
-func NewTokenGenerator() ITokenGenerator {
-	return &TokenGenerator{}
+func NewTokenGenerator(secret string) ITokenGenerator {
+	return &TokenGenerator{
+		Secret: secret,
+	}
 }
 
 // GetUserID TokenGenerator method
@@ -37,8 +40,22 @@ func (tg *TokenGenerator) SetAccessToken(accessToken string) {
 	tg.AccessToken = accessToken
 }
 
+// GetSecret TokenGenerator method
+func (tg *TokenGenerator) GetSecret() string {
+	return tg.Secret
+}
+
+// SetSecret TokenGenerator method
+func (tg *TokenGenerator) SetSecret(secret string) {
+	tg.Secret = secret
+}
+
 // Generate TokenGenerator method
 func (tg *TokenGenerator) Generate() string {
+	if tg.UserID == "" || tg.Secret == "" {
+		return ""
+	}
+
 	claims := jwt.MapClaims{}
 
 	claims["userId"] = tg.UserID
@@ -46,7 +63,7 @@ func (tg *TokenGenerator) Generate() string {
 
 	tokenWithClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	generatedToken, err := tokenWithClaims.SignedString("MY_JWT_SECRET")
+	generatedToken, err := tokenWithClaims.SignedString(tg.Secret)
 
 	if err != nil {
 		return ""
