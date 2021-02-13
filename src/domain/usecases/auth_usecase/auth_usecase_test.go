@@ -5,14 +5,14 @@ import (
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
 	usecases "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
-	encrypter "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encrypter"
-	encrypter_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encrypter/mocks"
-	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/token_generator"
-	token_generator_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/token_generator/mocks"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 	luber_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository/mocks"
 	uatr "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
 	uatr_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository/mocks"
+	encrypter "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/encrypter"
+	encrypter_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/encrypter/mocks"
+	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/token_generator"
+	token_generator_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/token_generator/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -83,14 +83,14 @@ func TestShouldReturnAnAccessTokenIfCorrectCredentialsAreProvided(t *testing.T) 
 	assert.NotEmpty(t, accessToken)
 }
 
-// func TestShouldCallUpdateAccessTokenRepositoryWithCorrectValues(t *testing.T) {
-// 	sut, loadUserByEmailRepositorySpy, _, tokenGeneratorSpy, updateAccessTokenRepositorySpy := makeSut()
+func TestShouldCallUpdateAccessTokenRepositoryWithCorrectValues(t *testing.T) {
+	sut, loadUserByEmailRepositorySpy, _, tokenGeneratorSpy, updateAccessTokenRepositorySpy := makeSut()
 
-// 	sut.SetEmail("valid_email@mail.com")
-// 	sut.SetPassword("valid_password")
+	sut.SetEmail("valid_email@mail.com")
+	sut.SetPassword("valid_password")
 
-// 	accessToken := sut.Auth()
+	sut.Auth()
 
-// 	assert.Equal(t, updateAccessTokenRepositorySpy.GetUserID(), loadUserByEmailRepositorySpy.GetUser().GetID())
-// 	assert.Equal(t, updateAccessTokenRepositorySpy.GetAccessToken(), tokenGeneratorSpy.GetAccessToken())
-// }
+	assert.Equal(t, updateAccessTokenRepositorySpy.GetUserID(), loadUserByEmailRepositorySpy.GetUser().GetID())
+	assert.Equal(t, updateAccessTokenRepositorySpy.GetAccessToken(), tokenGeneratorSpy.GetAccessToken())
+}

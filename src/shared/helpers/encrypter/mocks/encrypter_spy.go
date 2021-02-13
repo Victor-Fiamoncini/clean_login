@@ -1,6 +1,6 @@
 package mocks
 
-import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encrypter"
+import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/encrypter"
 
 // EncrypterSpy struct
 type EncrypterSpy struct {

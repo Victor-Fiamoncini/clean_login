@@ -1,10 +1,10 @@
 package authusecase
 
 import (
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encrypter"
-	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/token_generator"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 	uatr "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/encrypter"
+	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/token_generator"
 )
 
 // AuthUseCase struct

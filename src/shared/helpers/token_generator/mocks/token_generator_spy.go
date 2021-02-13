@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/token_generator"
+	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/token_generator"
 )
 
 // TokenGeneratorSpy struct
