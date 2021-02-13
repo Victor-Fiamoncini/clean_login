@@ -33,3 +33,14 @@ func TestShouldReturnFalseIfBCryptReturnsFalse(t *testing.T) {
 
 	assert.Equal(t, false, passwordIsValid)
 }
+
+func TestShouldReturnFalseIfRequiredParamsAreNotProvided(t *testing.T) {
+	sut, validPasswordHash := makeSut()
+
+	sut.SetPassword("invalid_password")
+	sut.SetHashedPassword(validPasswordHash)
+
+	passwordIsValid := sut.Compare()
+
+	assert.Equal(t, false, passwordIsValid)
+}

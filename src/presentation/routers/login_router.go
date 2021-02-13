@@ -39,7 +39,9 @@ func (lr *LoginRouter) Route(httpRequest *helpers.HTTPRequest) helpers.IHTTPResp
 		return httpResponse.BadRequest(shared_custom_errors.NewMissingParamError("email"))
 	}
 
-	if !lr.EmailValidator.Run(email) {
+	lr.EmailValidator.SetEmail(email)
+
+	if !lr.EmailValidator.Run() {
 		return httpResponse.BadRequest(shared_custom_errors.NewInvalidParamError("email"))
 	}
 

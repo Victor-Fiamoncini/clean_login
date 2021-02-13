@@ -48,6 +48,10 @@ func (e *Encrypter) SetIsValid(isValid bool) {
 
 // Compare Encrypter method
 func (e *Encrypter) Compare() bool {
+	if e.Password == "" || e.HashedPassword == "" {
+		return false
+	}
+
 	err := bcrypt.CompareHashAndPassword([]byte(e.HashedPassword), []byte(e.Password))
 
 	e.IsValid = err == nil

@@ -7,12 +7,23 @@ import (
 
 // EmailValidator struct
 type EmailValidator struct {
+	Email        string
 	IsEmailValid bool
 }
 
 // NewEmailValidator func
 func NewEmailValidator() IEmailValidator {
 	return &EmailValidator{}
+}
+
+// GetEmail EmailValidator method
+func (ev *EmailValidator) GetEmail() string {
+	return ev.Email
+}
+
+// SetEmail EmailValidator method
+func (ev *EmailValidator) SetEmail(email string) {
+	ev.Email = email
 }
 
 // GetIsEmailValid EmailValidator method
@@ -26,8 +37,12 @@ func (ev *EmailValidator) SetIsEmailValid(isEmailValid bool) {
 }
 
 // Run NewEmailValidator method
-func (ev *EmailValidator) Run(email string) bool {
-	err := validation.Validate(email, is.Email)
+func (ev *EmailValidator) Run() bool {
+	if ev.Email == "" {
+		return false
+	}
+
+	err := validation.Validate(ev.Email, is.Email)
 
 	ev.IsEmailValid = err == nil
 

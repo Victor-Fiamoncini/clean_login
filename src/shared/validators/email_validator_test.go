@@ -16,7 +16,9 @@ func makeSut() validators.IEmailValidator {
 func TestShouldReturnTrueIfValidatorReturnsTrue(t *testing.T) {
 	sut := makeSut()
 
-	isEmailValid := sut.Run("valid_email@mail.com")
+	sut.SetEmail("valid_email@mail.com")
+
+	isEmailValid := sut.Run()
 
 	assert.Equal(t, true, isEmailValid)
 }
@@ -24,7 +26,17 @@ func TestShouldReturnTrueIfValidatorReturnsTrue(t *testing.T) {
 func TestShouldReturnFalseIfValidatorReturnsFalse(t *testing.T) {
 	sut := makeSut()
 
-	isEmailValid := sut.Run("invalid_email")
+	sut.SetEmail("invalid_email")
+
+	isEmailValid := sut.Run()
+
+	assert.Equal(t, false, isEmailValid)
+}
+
+func TestShouldReturnFalseIfNoEmailIsProvided(t *testing.T) {
+	sut := makeSut()
+
+	isEmailValid := sut.Run()
 
 	assert.Equal(t, false, isEmailValid)
 }
