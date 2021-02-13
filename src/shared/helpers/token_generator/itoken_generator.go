@@ -1,5 +1,7 @@
 package tokengenerator
 
+import shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
+
 // ITokenGenerator interface
 type ITokenGenerator interface {
 	GetUserID() string
@@ -9,5 +11,5 @@ type ITokenGenerator interface {
 	GetSecret() string
 	SetSecret(secret string)
 
-	Generate() string
+	Generate() (string, shared_custom_errors.IDefaultError)
 }

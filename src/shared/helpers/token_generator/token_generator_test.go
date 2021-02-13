@@ -18,7 +18,9 @@ func makeSut() token_generator.ITokenGenerator {
 func TestShouldReturnNullIfJWTReturnsNull(t *testing.T) {
 	sut := makeSut()
 
-	token := sut.Generate()
+	sut.SetUserID("")
+
+	token, _ := sut.Generate()
 
 	assert.Equal(t, "", token)
 }
@@ -26,15 +28,16 @@ func TestShouldReturnNullIfJWTReturnsNull(t *testing.T) {
 func TestShouldReturnANewTokenIfJWTReturnsANewToken(t *testing.T) {
 	sut := makeSut()
 
-	token := sut.Generate()
+	token, _ := sut.Generate()
 
 	assert.Equal(t, sut.GetAccessToken(), token)
 }
 
-func TestShouldReturnNullIfRequiredParamsAreNotProvided(t *testing.T) {
+func TestShouldReturnAnErrorIfRequiredParamsAreNotProvided(t *testing.T) {
 	sut := token_generator.NewTokenGenerator("")
 
-	token := sut.Generate()
+	_, err := sut.Generate()
 
-	assert.Equal(t, "", token)
+	assert.Equal(t, "MissingParamError", err.GetName())
+	assert.Equal(t, "Missing param: Secret", err.GetError().Error())
 }

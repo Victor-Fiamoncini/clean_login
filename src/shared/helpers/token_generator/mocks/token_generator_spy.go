@@ -1,6 +1,7 @@
 package mocks
 
 import (
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/token_generator"
 )
 
@@ -47,6 +48,6 @@ func (tgs *TokenGeneratorSpy) SetSecret(secret string) {
 }
 
 // Generate TokenGeneratorSpy method
-func (tgs *TokenGeneratorSpy) Generate() string {
-	return tgs.AccessToken
+func (tgs *TokenGeneratorSpy) Generate() (string, shared_custom_errors.IDefaultError) {
+	return tgs.AccessToken, nil
 }

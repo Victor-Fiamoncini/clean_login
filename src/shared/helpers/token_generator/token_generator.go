@@ -3,6 +3,7 @@ package tokengenerator
 import (
 	"time"
 
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -51,9 +52,17 @@ func (tg *TokenGenerator) SetSecret(secret string) {
 }
 
 // Generate TokenGenerator method
-func (tg *TokenGenerator) Generate() string {
-	if tg.UserID == "" || tg.Secret == "" {
-		return ""
+func (tg *TokenGenerator) Generate() (string, shared_custom_errors.IDefaultError) {
+	if tg.Secret == "" {
+		err := shared_custom_errors.NewMissingParamError("Secret")
+
+		return "", err
+	}
+
+	if tg.UserID == "" {
+		err := shared_custom_errors.NewMissingParamError("UserID")
+
+		return "", err
 	}
 
 	claims := jwt.MapClaims{}
@@ -66,10 +75,10 @@ func (tg *TokenGenerator) Generate() string {
 	generatedToken, err := tokenWithClaims.SignedString(tg.Secret)
 
 	if err != nil {
-		return ""
+		return "", shared_custom_errors.NewUnexpectedError("TokenGenerator:Generate()")
 	}
 
 	tg.AccessToken = generatedToken
 
-	return tg.AccessToken
+	return tg.AccessToken, nil
 }
