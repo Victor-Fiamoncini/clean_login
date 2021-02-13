@@ -33,11 +33,24 @@ func TestShouldReturnANewTokenIfJWTReturnsANewToken(t *testing.T) {
 	assert.Equal(t, sut.GetAccessToken(), token)
 }
 
-func TestShouldReturnAnErrorIfRequiredParamsAreNotProvided(t *testing.T) {
+func TestShouldReturnAnErrorIfSecretAreNotProvided(t *testing.T) {
 	sut := token_generator.NewTokenGenerator("")
+
+	sut.SetUserID("any_id")
 
 	_, err := sut.Generate()
 
 	assert.Equal(t, "MissingParamError", err.GetName())
 	assert.Equal(t, "Missing param: Secret", err.GetError().Error())
+}
+
+func TestShouldReturnAnErrorIfUserIDAreNotProvided(t *testing.T) {
+	sut := token_generator.NewTokenGenerator("")
+
+	sut.SetSecret("MY_SECRET")
+
+	_, err := sut.Generate()
+
+	assert.Equal(t, "MissingParamError", err.GetName())
+	assert.Equal(t, "Missing param: UserID", err.GetError().Error())
 }

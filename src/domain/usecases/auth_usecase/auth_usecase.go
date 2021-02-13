@@ -62,6 +62,7 @@ func (auc *AuthUseCase) SetAccessToken(accessToken string) {
 // Auth AuthUseCase method
 func (auc *AuthUseCase) Auth() (string, shared_custom_errors.IDefaultError) {
 	auc.LoadUserByEmailRepository.SetEmail(auc.GetEmail())
+
 	user, loadUserByEmailRepositoryErr := auc.LoadUserByEmailRepository.Load()
 
 	if loadUserByEmailRepositoryErr != nil {
@@ -71,13 +72,14 @@ func (auc *AuthUseCase) Auth() (string, shared_custom_errors.IDefaultError) {
 	auc.Encrypter.SetPassword(auc.GetPassword())
 	auc.Encrypter.SetHashedPassword(user.GetPassword())
 
-	_, encrypterErr := auc.Encrypter.Compare()
+	isPasswordValid, encrypterErr := auc.Encrypter.Compare()
 
-	if encrypterErr != nil {
+	if encrypterErr != nil || !isPasswordValid {
 		return "", encrypterErr
 	}
 
 	auc.TokenGenerator.SetUserID(user.GetID())
+
 	accessToken, tokenGeneratorErr := auc.TokenGenerator.Generate()
 
 	if tokenGeneratorErr != nil {
@@ -87,7 +89,11 @@ func (auc *AuthUseCase) Auth() (string, shared_custom_errors.IDefaultError) {
 	auc.UpdateAccessTokenRepository.SetUserID(user.GetID())
 	auc.UpdateAccessTokenRepository.SetAccessToken(accessToken)
 
-	auc.UpdateAccessTokenRepository.Update()
+	updateAccessTokenRepositoryErr := auc.UpdateAccessTokenRepository.Update()
+
+	if updateAccessTokenRepositoryErr != nil {
+		return "", updateAccessTokenRepositoryErr
+	}
 
 	return accessToken, nil
 }

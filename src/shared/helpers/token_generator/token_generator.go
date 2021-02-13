@@ -72,9 +72,9 @@ func (tg *TokenGenerator) Generate() (string, shared_custom_errors.IDefaultError
 
 	tokenWithClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	generatedToken, err := tokenWithClaims.SignedString(tg.Secret)
+	generatedToken, jwtErr := tokenWithClaims.SignedString(tg.Secret)
 
-	if err != nil {
+	if jwtErr != nil {
 		return "", shared_custom_errors.NewUnexpectedError("TokenGenerator.Generate()")
 	}
 

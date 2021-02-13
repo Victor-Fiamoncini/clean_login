@@ -52,9 +52,9 @@ func (lr *LoginRouter) Route(httpRequest *helpers.HTTPRequest) helpers.IHTTPResp
 	lr.AuthUseCase.SetEmail(email)
 	lr.AuthUseCase.SetPassword(password)
 
-	accessToken := lr.AuthUseCase.Auth()
+	accessToken, authUseCaseErr := lr.AuthUseCase.Auth()
 
-	if accessToken == "" {
+	if authUseCaseErr != nil || accessToken == "" {
 		return httpResponse.Unauthorized()
 	}
 

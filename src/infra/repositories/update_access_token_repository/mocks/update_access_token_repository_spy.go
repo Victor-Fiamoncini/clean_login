@@ -2,6 +2,7 @@ package mocks
 
 import (
 	uatr "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 )
 
 // UpdateAccessTokenRepositorySpy struct
@@ -36,5 +37,6 @@ func (uatrs *UpdateAccessTokenRepositorySpy) SetAccessToken(accessToken string) 
 }
 
 // Update UpdateAccessTokenRepositorySpy method
-func (uatrs *UpdateAccessTokenRepositorySpy) Update() {
+func (uatrs *UpdateAccessTokenRepositorySpy) Update() shared_custom_errors.IDefaultError {
+	return nil
 }

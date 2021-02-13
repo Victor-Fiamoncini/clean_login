@@ -1,6 +1,9 @@
 package mocks
 
-import authusecase "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
+import (
+	authusecase "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
+)
 
 // AuthUseCaseSpy struct
 type AuthUseCaseSpy struct {
@@ -45,6 +48,6 @@ func (aucs *AuthUseCaseSpy) SetAccessToken(accessToken string) {
 }
 
 // Auth AuthUseCaseSpy method
-func (aucs *AuthUseCaseSpy) Auth() string {
-	return aucs.AccessToken
+func (aucs *AuthUseCaseSpy) Auth() (string, shared_custom_errors.IDefaultError) {
+	return aucs.AccessToken, nil
 }

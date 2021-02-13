@@ -42,9 +42,10 @@ func TestShouldCallLoadUserByEmailRepositoryWithCorrectEmail(t *testing.T) {
 	sut.SetEmail("any_email@mail.com")
 	sut.SetPassword("any_password")
 
-	sut.Auth()
+	_, err := sut.Auth()
 
 	assert.Equal(t, "any_email@mail.com", loadUserByEmailRepositorySpy.GetEmail())
+	assert.Nil(t, err)
 }
 
 func TestShouldCallEncrypterWithCorrectValues(t *testing.T) {
@@ -53,10 +54,11 @@ func TestShouldCallEncrypterWithCorrectValues(t *testing.T) {
 	sut.SetEmail("valid_email@mail.com")
 	sut.SetPassword("any_password")
 
-	sut.Auth()
+	_, err := sut.Auth()
 
 	assert.Equal(t, "any_password", encrypterSpy.GetPassword())
 	assert.Equal(t, loadUserByEmailRepositorySpy.GetUser().GetPassword(), encrypterSpy.GetHashedPassword())
+	assert.Nil(t, err)
 }
 
 func TestShouldCallTokenGeneratorWithCorrectUserID(t *testing.T) {
@@ -65,9 +67,10 @@ func TestShouldCallTokenGeneratorWithCorrectUserID(t *testing.T) {
 	sut.SetEmail("valid_email@mail.com")
 	sut.SetPassword("valid_password")
 
-	sut.Auth()
+	_, err := sut.Auth()
 
 	assert.Equal(t, loadUserByEmailRepositorySpy.GetUser().GetID(), tokenGeneratorSpy.GetUserID())
+	assert.Nil(t, err)
 }
 
 func TestShouldReturnAnAccessTokenIfCorrectCredentialsAreProvided(t *testing.T) {
@@ -76,11 +79,12 @@ func TestShouldReturnAnAccessTokenIfCorrectCredentialsAreProvided(t *testing.T) 
 	sut.SetEmail("valid_email@mail.com")
 	sut.SetPassword("valid_password")
 
-	accessToken := sut.Auth()
+	accessToken, err := sut.Auth()
 
 	assert.Equal(t, tokenGeneratorSpy.GetAccessToken(), accessToken)
 	assert.NotNil(t, accessToken)
 	assert.NotEmpty(t, accessToken)
+	assert.Nil(t, err)
 }
 
 func TestShouldCallUpdateAccessTokenRepositoryWithCorrectValues(t *testing.T) {
@@ -89,8 +93,9 @@ func TestShouldCallUpdateAccessTokenRepositoryWithCorrectValues(t *testing.T) {
 	sut.SetEmail("valid_email@mail.com")
 	sut.SetPassword("valid_password")
 
-	sut.Auth()
+	_, err := sut.Auth()
 
 	assert.Equal(t, updateAccessTokenRepositorySpy.GetUserID(), loadUserByEmailRepositorySpy.GetUser().GetID())
 	assert.Equal(t, updateAccessTokenRepositorySpy.GetAccessToken(), tokenGeneratorSpy.GetAccessToken())
+	assert.Nil(t, err)
 }
