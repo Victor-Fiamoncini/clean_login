@@ -1,5 +1,7 @@
 package encrypter
 
+import shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
+
 // IEncrypter interface
 type IEncrypter interface {
 	GetPassword() string
@@ -9,5 +11,5 @@ type IEncrypter interface {
 	GetIsValid() bool
 	SetIsValid(hashedPassword bool)
 
-	Compare() bool
+	Compare() (bool, shared_custom_errors.IDefaultError)
 }

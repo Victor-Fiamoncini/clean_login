@@ -1,6 +1,7 @@
 package encrypter
 
 import (
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -47,14 +48,24 @@ func (e *Encrypter) SetIsValid(isValid bool) {
 }
 
 // Compare Encrypter method
-func (e *Encrypter) Compare() bool {
-	if e.Password == "" || e.HashedPassword == "" {
-		return false
+func (e *Encrypter) Compare() (bool, shared_custom_errors.IDefaultError) {
+	if e.Password == "" {
+		return false, shared_custom_errors.NewMissingParamError("Password")
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(e.HashedPassword), []byte(e.Password))
+	if e.HashedPassword == "" {
+		return false, shared_custom_errors.NewMissingParamError("HashedPassword")
+	}
 
-	e.IsValid = err == nil
+	bcryptErr := bcrypt.CompareHashAndPassword([]byte(e.HashedPassword), []byte(e.Password))
 
-	return e.IsValid
+	if bcryptErr != nil {
+		e.IsValid = false
+
+		return false, shared_custom_errors.NewUnexpectedError("Encrypter.Compare()")
+	}
+
+	e.IsValid = true
+
+	return e.IsValid, nil
 }

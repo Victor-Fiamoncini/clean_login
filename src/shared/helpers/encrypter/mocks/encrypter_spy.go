@@ -1,6 +1,9 @@
 package mocks
 
-import "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/encrypter"
+import (
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/encrypter"
+)
 
 // EncrypterSpy struct
 type EncrypterSpy struct {
@@ -45,6 +48,6 @@ func (es *EncrypterSpy) SetIsValid(isValid bool) {
 }
 
 // Compare EncrypterSpy method
-func (es *EncrypterSpy) Compare() bool {
-	return es.IsValid
+func (es *EncrypterSpy) Compare() (bool, shared_custom_errors.IDefaultError) {
+	return es.IsValid, nil
 }

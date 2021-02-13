@@ -75,7 +75,7 @@ func (tg *TokenGenerator) Generate() (string, shared_custom_errors.IDefaultError
 	generatedToken, err := tokenWithClaims.SignedString(tg.Secret)
 
 	if err != nil {
-		return "", shared_custom_errors.NewUnexpectedError("TokenGenerator:Generate()")
+		return "", shared_custom_errors.NewUnexpectedError("TokenGenerator.Generate()")
 	}
 
 	tg.AccessToken = generatedToken

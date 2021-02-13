@@ -3,6 +3,7 @@ package mocks
 import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
+	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 )
 
 // LoadUserByEmailRepositorySpy struct
@@ -37,6 +38,6 @@ func (lubers *LoadUserByEmailRepositorySpy) SetUser(user entities.IUser) {
 }
 
 // Load LoadUserByEmailRepositorySpy method
-func (lubers *LoadUserByEmailRepositorySpy) Load() entities.IUser {
-	return lubers.User
+func (lubers *LoadUserByEmailRepositorySpy) Load() (entities.IUser, shared_custom_errors.IDefaultError) {
+	return lubers.User, nil
 }

@@ -19,29 +19,41 @@ func TestShouldReturnTrueIfBCryptReturnsTrue(t *testing.T) {
 	sut.SetPassword("valid_password")
 	sut.SetHashedPassword(validPasswordHash)
 
-	passwordIsValid := sut.Compare()
+	passwordIsValid, _ := sut.Compare()
 
 	assert.Equal(t, true, passwordIsValid)
 }
 
-func TestShouldReturnFalseIfBCryptReturnsFalse(t *testing.T) {
+func TestShouldReturnFalseAndAnErrorIfBCryptReturnsFalse(t *testing.T) {
 	sut, validPasswordHash := makeSut()
 
 	sut.SetPassword("invalid_password")
 	sut.SetHashedPassword(validPasswordHash)
 
-	passwordIsValid := sut.Compare()
+	passwordIsValid, err := sut.Compare()
 
 	assert.Equal(t, false, passwordIsValid)
+	assert.Equal(t, "Unexpected Error with: Encrypter.Compare()", err.GetError().Error())
 }
 
-func TestShouldReturnFalseIfRequiredParamsAreNotProvided(t *testing.T) {
+func TestShouldReturnFalseAndAnErrorIfPasswordIsNotProvided(t *testing.T) {
 	sut, validPasswordHash := makeSut()
 
-	sut.SetPassword("invalid_password")
 	sut.SetHashedPassword(validPasswordHash)
 
-	passwordIsValid := sut.Compare()
+	passwordIsValid, err := sut.Compare()
 
 	assert.Equal(t, false, passwordIsValid)
+	assert.Equal(t, "Missing param: Password", err.GetError().Error())
+}
+
+func TestShouldReturnFalseAndAnErrorIfHashedPasswordIsNotProvided(t *testing.T) {
+	sut, _ := makeSut()
+
+	sut.SetPassword("any_password")
+
+	passwordIsValid, err := sut.Compare()
+
+	assert.Equal(t, false, passwordIsValid)
+	assert.Equal(t, "Missing param: HashedPassword", err.GetError().Error())
 }
