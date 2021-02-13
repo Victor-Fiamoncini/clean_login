@@ -29,5 +29,7 @@ func (ev *EmailValidator) SetIsEmailValid(isEmailValid bool) {
 func (ev *EmailValidator) Run(email string) bool {
 	err := validation.Validate(email, is.Email)
 
-	return err == nil
+	ev.IsEmailValid = err == nil
+
+	return ev.IsEmailValid
 }

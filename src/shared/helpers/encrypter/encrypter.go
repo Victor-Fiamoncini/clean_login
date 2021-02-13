@@ -1,5 +1,9 @@
 package encrypter
 
+import (
+	"golang.org/x/crypto/bcrypt"
+)
+
 // Encrypter struct
 type Encrypter struct {
 	Password       string
@@ -44,5 +48,9 @@ func (e *Encrypter) SetIsValid(isValid bool) {
 
 // Compare Encrypter method
 func (e *Encrypter) Compare() bool {
-	return true
+	err := bcrypt.CompareHashAndPassword([]byte(e.HashedPassword), []byte(e.Password))
+
+	e.IsValid = err == nil
+
+	return e.IsValid
 }
