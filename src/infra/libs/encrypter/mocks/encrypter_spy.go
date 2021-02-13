@@ -45,9 +45,6 @@ func (es *EncrypterSpy) SetIsValid(isValid bool) {
 }
 
 // Compare EncrypterSpy method
-func (es *EncrypterSpy) Compare(password string, hashedPassword string) bool {
-	es.Password = password
-	es.HashedPassword = hashedPassword
-
+func (es *EncrypterSpy) Compare() bool {
 	return es.IsValid
 }

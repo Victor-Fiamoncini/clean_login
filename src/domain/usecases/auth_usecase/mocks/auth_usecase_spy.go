@@ -45,9 +45,6 @@ func (aucs *AuthUseCaseSpy) SetAccessToken(accessToken string) {
 }
 
 // Auth AuthUseCaseSpy method
-func (aucs *AuthUseCaseSpy) Auth(email string, password string) string {
-	aucs.Email = email
-	aucs.Password = password
-
+func (aucs *AuthUseCaseSpy) Auth() string {
 	return aucs.AccessToken
 }

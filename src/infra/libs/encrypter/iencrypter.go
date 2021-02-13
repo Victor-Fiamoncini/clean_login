@@ -9,5 +9,5 @@ type IEncrypter interface {
 	GetIsValid() bool
 	SetIsValid(hashedPassword bool)
 
-	Compare(password string, hashedPassword string) bool
+	Compare() bool
 }

@@ -9,5 +9,5 @@ type IAuthUseCase interface {
 	GetAccessToken() string
 	SetAccessToken(accessToken string)
 
-	Auth(email string, password string) string
+	Auth() string
 }

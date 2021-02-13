@@ -36,8 +36,6 @@ func (tgs *TokenGeneratorSpy) SetAccessToken(accessToken string) {
 }
 
 // Generate TokenGeneratorSpy method
-func (tgs *TokenGeneratorSpy) Generate(userID string) string {
-	tgs.UserID = userID
-
+func (tgs *TokenGeneratorSpy) Generate() string {
 	return tgs.AccessToken
 }

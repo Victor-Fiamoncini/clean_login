@@ -9,5 +9,5 @@ type ILoadUserByEmailRepository interface {
 	GetUser() entities.IUser
 	SetUser(user entities.IUser)
 
-	Load(email string) entities.IUser
+	Load() entities.IUser
 }

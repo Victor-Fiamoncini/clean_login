@@ -4,24 +4,27 @@ import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/encrypter"
 	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/libs/token_generator"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
+	uatr "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
 )
 
 // AuthUseCase struct
 type AuthUseCase struct {
-	Email                     string
-	Password                  string
-	AccessToken               string
-	LoadUserByEmailRepository luber.ILoadUserByEmailRepository
-	Encrypter                 encrypter.IEncrypter
-	TokenGenerator            token_generator.ITokenGenerator
+	Email                       string
+	Password                    string
+	AccessToken                 string
+	LoadUserByEmailRepository   luber.ILoadUserByEmailRepository
+	Encrypter                   encrypter.IEncrypter
+	TokenGenerator              token_generator.ITokenGenerator
+	UpdateAccessTokenRepository uatr.IUpdateAccessTokenRepository
 }
 
 // NewAuthUseCase func
-func NewAuthUseCase(loadUserByEmailRepository luber.ILoadUserByEmailRepository, encrypter encrypter.IEncrypter, tokenGenerator token_generator.ITokenGenerator) IAuthUseCase {
+func NewAuthUseCase(loadUserByEmailRepository luber.ILoadUserByEmailRepository, encrypter encrypter.IEncrypter, tokenGenerator token_generator.ITokenGenerator, updateAccessTokenRepository uatr.IUpdateAccessTokenRepository) IAuthUseCase {
 	return &AuthUseCase{
-		LoadUserByEmailRepository: loadUserByEmailRepository,
-		Encrypter:                 encrypter,
-		TokenGenerator:            tokenGenerator,
+		LoadUserByEmailRepository:   loadUserByEmailRepository,
+		Encrypter:                   encrypter,
+		TokenGenerator:              tokenGenerator,
+		UpdateAccessTokenRepository: updateAccessTokenRepository,
 	}
 }
 
@@ -56,12 +59,28 @@ func (auc *AuthUseCase) SetAccessToken(accessToken string) {
 }
 
 // Auth AuthUseCase method
-func (auc *AuthUseCase) Auth(email string, password string) string {
-	user := auc.LoadUserByEmailRepository.Load(email)
+func (auc *AuthUseCase) Auth() string {
+	auc.LoadUserByEmailRepository.SetEmail(auc.GetEmail())
+	user := auc.LoadUserByEmailRepository.Load()
 
-	if user == nil && !auc.Encrypter.Compare(password, user.GetPassword()) {
+	if user == nil {
 		return ""
 	}
 
-	return auc.TokenGenerator.Generate(user.GetID())
+	auc.Encrypter.SetPassword(auc.GetPassword())
+	auc.Encrypter.SetHashedPassword(user.GetPassword())
+
+	if !auc.Encrypter.Compare() {
+		return ""
+	}
+
+	auc.TokenGenerator.SetUserID(user.GetID())
+	accessToken := auc.TokenGenerator.Generate()
+
+	auc.UpdateAccessTokenRepository.SetUserID(user.GetID())
+	auc.UpdateAccessTokenRepository.SetAccessToken(accessToken)
+
+	auc.UpdateAccessTokenRepository.Update()
+
+	return accessToken
 }

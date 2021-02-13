@@ -47,7 +47,10 @@ func (lr *LoginRouter) Route(httpRequest *helpers.HTTPRequest) helpers.IHTTPResp
 		return httpResponse.BadRequest(shared_custom_errors.NewMissingParamError("password"))
 	}
 
-	accessToken := lr.AuthUseCase.Auth(email, password)
+	lr.AuthUseCase.SetEmail(email)
+	lr.AuthUseCase.SetPassword(password)
+
+	accessToken := lr.AuthUseCase.Auth()
 
 	if accessToken == "" {
 		return httpResponse.Unauthorized()

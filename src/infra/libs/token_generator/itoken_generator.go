@@ -7,5 +7,5 @@ type ITokenGenerator interface {
 	GetAccessToken() string
 	SetAccessToken(accessToken string)
 
-	Generate(userID string) string
+	Generate() string
 }
