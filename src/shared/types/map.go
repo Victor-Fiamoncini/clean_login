@@ -1,4 +1,4 @@
 package types
 
 // Map type
-type Map = map[string]interface{}
+type Map map[string]interface{}

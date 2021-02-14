@@ -4,6 +4,8 @@ package entities
 type IUser interface {
 	GetID() string
 	SetID(id string)
+	GetEmail() string
+	SetEmail(email string)
 	GetPassword() string
 	SetPassword(password string)
 }

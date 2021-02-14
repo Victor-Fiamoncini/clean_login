@@ -2,8 +2,9 @@ package entities
 
 // User struct
 type User struct {
-	ID       string
-	Password string
+	ID       string `bson:"_id"`
+	Email    string `bson:"email"`
+	Password string `bson:"password"`
 }
 
 // NewUser func
@@ -19,6 +20,16 @@ func (u *User) GetID() string {
 // SetID User method
 func (u *User) SetID(id string) {
 	u.ID = id
+}
+
+// GetEmail User method
+func (u *User) GetEmail() string {
+	return u.Email
+}
+
+// SetEmail User method
+func (u *User) SetEmail(email string) {
+	u.Email = email
 }
 
 // GetPassword User method
