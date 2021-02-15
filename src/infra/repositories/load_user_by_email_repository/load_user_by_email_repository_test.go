@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"testing"
+	"time"
 
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 	"github.com/stretchr/testify/assert"
@@ -12,35 +13,35 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var ctx = context.TODO()
-var userModel *mongo.Collection
-
-func init() {
+func mongoConnection() (*mongo.Client, context.Context, *mongo.Collection) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	mongoClient, connectErr := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://mongo"))
 
 	if connectErr != nil {
 		log.Fatal(connectErr)
 	}
 
-	pingErr := mongoClient.Ping(ctx, nil)
+	userModel := mongoClient.Database("auth_clean_architecture").Collection("users")
 
-	if pingErr != nil {
-		log.Fatal(pingErr)
-	}
-
-	userModel = mongoClient.Database("auth_clean_architecture").Collection("users")
+	return mongoClient, ctx, userModel
 }
 
-func makeSut() luber.ILoadUserByEmailRepository {
+func makeSut() (luber.ILoadUserByEmailRepository, *mongo.Client, context.Context, *mongo.Collection) {
+	mongoClient, ctx, userModel := mongoConnection()
+
 	loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(userModel)
 
 	loadUserByEmailRepository.SetEmail("valid_email@mail.com")
 
-	return loadUserByEmailRepository
+	return loadUserByEmailRepository, mongoClient, ctx, userModel
 }
 
 func TestShouldReturnNullAndAnErrorIfNoUserIsFound(t *testing.T) {
-	sut := makeSut()
+	sut, mongoClient, ctx, userModel := makeSut()
+
+	defer userModel.Drop(ctx)
+	defer mongoClient.Disconnect(ctx)
+	defer ctx.Done()
 
 	sut.SetEmail("invalid_email@mail.com")
 
@@ -51,7 +52,11 @@ func TestShouldReturnNullAndAnErrorIfNoUserIsFound(t *testing.T) {
 }
 
 func TestShouldReturnAnUserIfUserIsFound(t *testing.T) {
-	sut := makeSut()
+	sut, mongoClient, ctx, userModel := makeSut()
+
+	defer userModel.Drop(ctx)
+	defer mongoClient.Disconnect(ctx)
+	defer ctx.Done()
 
 	userModel.InsertOne(ctx, bson.D{
 		{

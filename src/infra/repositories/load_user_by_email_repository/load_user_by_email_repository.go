@@ -3,6 +3,7 @@ package loaduserbyemailrepository
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
@@ -51,10 +52,9 @@ func (luber *LoadUserByEmailRepository) Load() (entities.IUser, shared_custom_er
 	// }
 
 	user := entities.NewUser()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	ctx := context.Background()
-
-	defer ctx.Done()
+	defer cancel()
 
 	err := luber.UserModel.FindOne(ctx, bson.D{{
 		Key:   "email",
