@@ -3,41 +3,45 @@ package mocks
 import (
 	"context"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
+	mock "github.com/stretchr/testify/mock"
 )
 
-// NewMongoClient func
-func NewMongoClient(url string) (*mongo.Client, error) {
-	return mongo.NewClient(options.Client().ApplyURI(url))
+// Database struct
+type Database struct {
+	mock.Mock
 }
 
-// NewMongoDatabase func
-func NewMongoDatabase(name string, client *mongo.Client) *mongo.Database {
-	return client.Database(name)
+// InsertOne database method
+func (d *Database) InsertOne(ctx context.Context, user *entities.User) error {
+	ret := d.Called(ctx, user)
+
+	if rf, ok := ret.Get(0).(func(context.Context, *entities.User) error); ok {
+		return rf(ctx, user)
+	}
+
+	return ret.Error(0)
 }
 
-// NewMongoSession func
-func NewMongoSession(client *mongo.Client) (mongo.Session, error) {
-	return client.StartSession()
-}
+// FindOne Database method
+func (d *Database) FindOne(ctx context.Context, filter interface{}) (*entities.User, error) {
+	ret := d.Called(ctx, filter)
 
-// Connect func
-func Connect(client *mongo.Client) error {
-	return client.Connect(nil)
-}
+	var r0 *entities.User
+	if rf, ok := ret.Get(0).(func(context.Context, interface{}) *entities.User); ok {
+		r0 = rf(ctx, filter)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entities.User)
+		}
+	}
 
-// FindOne func
-func FindOne(ctx context.Context, coll mongo.Collection, filter interface{}) *mongo.SingleResult {
-	return coll.FindOne(ctx, filter)
-}
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, interface{}) error); ok {
+		r1 = rf(ctx, filter)
+	} else {
+		r1 = ret.Error(1)
+	}
 
-// InsertOne func
-func InsertOne(ctx context.Context, coll mongo.Collection, document interface{}) (*mongo.InsertOneResult, error) {
-	return coll.InsertOne(ctx, document)
-}
-
-// Decode func
-func Decode(result *mongo.SingleResult, value interface{}) error {
-	return result.Decode(value)
+	return r0, r1
 }
