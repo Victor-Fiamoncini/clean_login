@@ -1,13 +1,8 @@
 package loaduserbyemailrepository
 
 import (
-	"context"
-	"fmt"
-	"time"
-
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -47,27 +42,5 @@ func (luber *LoadUserByEmailRepository) SetUser(user entities.IUser) {
 
 // Load LoadUserByEmailRepository method
 func (luber *LoadUserByEmailRepository) Load() (entities.IUser, shared_custom_errors.IDefaultError) {
-	// if luber.Email == "" {
-	// 	return nil, shared_custom_errors.NewMissingParamError("Email")
-	// }
-
-	user := entities.NewUser()
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	defer cancel()
-
-	err := luber.UserModel.FindOne(ctx, bson.D{{
-		Key:   "email",
-		Value: luber.Email,
-	}}).Decode(&user)
-
-	if err != nil {
-		return nil, shared_custom_errors.NewDefaultError("LoadUserByEmailRepository.Load()")
-	}
-
-	luber.User = user
-
-	fmt.Println("USERRRRRRRRRRRRRRRR", luber.User)
-
 	return luber.User, nil
 }
