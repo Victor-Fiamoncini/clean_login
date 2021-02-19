@@ -1,6 +1,7 @@
 package authusecase
 
 import (
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 	uatr "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
@@ -61,38 +62,45 @@ func (auc *AuthUseCase) SetAccessToken(accessToken string) {
 
 // Auth AuthUseCase method
 func (auc *AuthUseCase) Auth() (string, shared_custom_errors.IDefaultError) {
+	var err shared_custom_errors.IDefaultError
+	var user entities.IUser
+
 	auc.LoadUserByEmailRepository.SetEmail(auc.GetEmail())
 
-	user, loadUserByEmailRepositoryErr := auc.LoadUserByEmailRepository.Load()
+	user, err = auc.LoadUserByEmailRepository.Load()
 
-	if loadUserByEmailRepositoryErr != nil {
-		return "", loadUserByEmailRepositoryErr
+	if err != nil {
+		return "", err
 	}
+
+	var isPasswordValid bool
 
 	auc.Encrypter.SetPassword(auc.GetPassword())
 	auc.Encrypter.SetHashedPassword(user.GetPassword())
 
-	isPasswordValid, encrypterErr := auc.Encrypter.Compare()
+	isPasswordValid, err = auc.Encrypter.Compare()
 
-	if encrypterErr != nil || !isPasswordValid {
-		return "", encrypterErr
+	if err != nil || !isPasswordValid {
+		return "", err
 	}
+
+	var accessToken string
 
 	auc.TokenGenerator.SetUserID(user.GetID())
 
-	accessToken, tokenGeneratorErr := auc.TokenGenerator.Generate()
+	accessToken, err = auc.TokenGenerator.Generate()
 
-	if tokenGeneratorErr != nil {
-		return "", tokenGeneratorErr
+	if err != nil {
+		return "", err
 	}
 
 	auc.UpdateAccessTokenRepository.SetUserID(user.GetID())
 	auc.UpdateAccessTokenRepository.SetAccessToken(accessToken)
 
-	updateAccessTokenRepositoryErr := auc.UpdateAccessTokenRepository.Update()
+	err = auc.UpdateAccessTokenRepository.Update()
 
-	if updateAccessTokenRepositoryErr != nil {
-		return "", updateAccessTokenRepositoryErr
+	if err != nil {
+		return "", err
 	}
 
 	return accessToken, nil
