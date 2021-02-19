@@ -50,8 +50,6 @@ func (luber *LoadUserByEmailRepository) Load() (entities.IUser, shared_custom_er
 		return nil, shared_custom_errors.NewMissingParamError("Email")
 	}
 
-	var err error
-
 	user := entities.NewUser()
 	ctx := context.Background()
 
@@ -64,7 +62,7 @@ func (luber *LoadUserByEmailRepository) Load() (entities.IUser, shared_custom_er
 		"password": 1,
 	}))
 
-	err = result.Decode(user)
+	err := result.Decode(user)
 
 	if err != nil {
 		return nil, shared_custom_errors.NewDefaultError("LoadUserByEmailRepository.Load()")

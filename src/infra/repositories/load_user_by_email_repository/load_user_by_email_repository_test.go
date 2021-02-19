@@ -48,11 +48,10 @@ func TestShouldReturnAnUserIfUserIsFound(t *testing.T) {
 	})
 
 	user, err := sut.Load()
-
-	id := result.InsertedID.(primitive.ObjectID).Hex()
+	insertedUserId := result.InsertedID.(primitive.ObjectID).Hex()
 
 	assert.Equal(t, user.GetPassword(), user.GetPassword())
-	assert.Equal(t, id, user.GetID())
+	assert.Equal(t, insertedUserId, user.GetID())
 	assert.Nil(t, err)
 }
 
