@@ -51,3 +51,11 @@ func TestShouldReturnAnUserIfUserIsFound(t *testing.T) {
 	assert.Equal(t, "valid_email@mail.com", user.GetEmail())
 	assert.Nil(t, err)
 }
+
+func TestShouldReturnAnErrorIfEmailIsNotProvided(t *testing.T) {
+	sut := luber.NewLoadUserByEmailRepository(nil)
+
+	_, err := sut.Load()
+
+	assert.Equal(t, "Missing param: Email", err.GetError().Error())
+}

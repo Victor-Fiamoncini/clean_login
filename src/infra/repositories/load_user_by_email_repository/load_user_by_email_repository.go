@@ -47,6 +47,10 @@ func (luber *LoadUserByEmailRepository) SetUser(user entities.IUser) {
 func (luber *LoadUserByEmailRepository) Load() (entities.IUser, shared_custom_errors.IDefaultError) {
 	var err error
 
+	if luber.Email == "" {
+		return nil, shared_custom_errors.NewMissingParamError("Email")
+	}
+
 	user := entities.NewUser()
 	ctx := context.Background()
 
