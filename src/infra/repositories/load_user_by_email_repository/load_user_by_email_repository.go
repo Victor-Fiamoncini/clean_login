@@ -7,6 +7,7 @@ import (
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // LoadUserByEmailRepository struct
@@ -45,21 +46,25 @@ func (luber *LoadUserByEmailRepository) SetUser(user entities.IUser) {
 
 // Load LoadUserByEmailRepository method
 func (luber *LoadUserByEmailRepository) Load() (entities.IUser, shared_custom_errors.IDefaultError) {
-	var err error
-
 	if luber.Email == "" {
 		return nil, shared_custom_errors.NewMissingParamError("Email")
 	}
+
+	var err error
 
 	user := entities.NewUser()
 	ctx := context.Background()
 
 	defer ctx.Done()
 
-	err = luber.UserModel.FindOne(ctx, bson.D{{
+	result := luber.UserModel.FindOne(ctx, bson.D{{
 		Key:   "email",
 		Value: luber.Email,
-	}}).Decode(user)
+	}}, options.FindOne().SetProjection(bson.M{
+		"password": 1,
+	}))
+
+	err = result.Decode(user)
 
 	if err != nil {
 		return nil, shared_custom_errors.NewDefaultError("LoadUserByEmailRepository.Load()")
