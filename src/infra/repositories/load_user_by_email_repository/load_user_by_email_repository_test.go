@@ -1,22 +1,28 @@
 package loaduserbyemailrepository_test
 
 import (
+	"context"
 	"testing"
 
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/database"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 	"github.com/stretchr/testify/assert"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func makeSut() luber.ILoadUserByEmailRepository {
-	loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(nil)
+func makeSut() (luber.ILoadUserByEmailRepository, *mongo.Collection) {
+	userModel := database.GetCollection("users")
+
+	loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(userModel)
 
 	loadUserByEmailRepository.SetEmail("valid_email@mail.com")
 
-	return loadUserByEmailRepository
+	return loadUserByEmailRepository, userModel
 }
 
 func TestShouldReturnNullAndAnErrorIfNoUserIsFound(t *testing.T) {
-	sut := makeSut()
+	sut, _ := makeSut()
 
 	sut.SetEmail("invalid_email@mail.com")
 
@@ -27,14 +33,18 @@ func TestShouldReturnNullAndAnErrorIfNoUserIsFound(t *testing.T) {
 }
 
 func TestShouldReturnAnUserIfUserIsFound(t *testing.T) {
-	sut := makeSut()
+	sut, userModel := makeSut()
+	ctx := context.Background()
 
-	// userModel.InsertOne(ctx, bson.D{
-	// 	{
-	// 		Key:   "email",
-	// 		Value: "valid_email@mail.com",
-	// 	},
-	// })
+	defer userModel.Drop(ctx)
+	defer ctx.Done()
+
+	userModel.InsertOne(ctx, bson.D{
+		{
+			Key:   "email",
+			Value: "valid_email@mail.com",
+		},
+	})
 
 	user, err := sut.Load()
 
