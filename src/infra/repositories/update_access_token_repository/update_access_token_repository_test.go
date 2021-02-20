@@ -93,3 +93,35 @@ func TestShouldReturnAnErrorIfNoUserIDIsProvided(t *testing.T) {
 
 	assert.Equal(t, "Missing param: UserID", err.GetError().Error())
 }
+
+func TestShouldReturnAnErrorIfUserWasNotFound(t *testing.T) {
+	sut, userModel := makeSut()
+	ctx := context.Background()
+
+	defer ctx.Done()
+	defer userModel.Drop(ctx)
+
+	userModel.InsertOne(ctx, bson.D{
+		{
+			Key:   "email",
+			Value: "valid_email@mail.com",
+		},
+		{
+			Key:   "password",
+			Value: "hashed_password",
+		},
+		{
+			Key:   "access_token",
+			Value: "",
+		},
+	})
+
+	randomID := primitive.NewObjectID().Hex()
+
+	sut.SetUserID(randomID)
+	sut.SetAccessToken("valid_token")
+
+	err := sut.Update()
+
+	assert.Equal(t, "Error with: UpdateAccessTokenRepository.Update()", err.GetError().Error())
+}

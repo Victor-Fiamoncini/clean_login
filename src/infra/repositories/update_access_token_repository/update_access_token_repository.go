@@ -63,7 +63,7 @@ func (uatr *UpdateAccessTokenRepository) Update() shared_custom_errors.IDefaultE
 		return shared_custom_errors.NewDefaultError("UpdateAccessTokenRepository.Update()")
 	}
 
-	_, err = uatr.UserModel.UpdateOne(
+	result := uatr.UserModel.FindOneAndUpdate(
 		ctx,
 		bson.M{
 			"_id": bson.M{
@@ -77,7 +77,7 @@ func (uatr *UpdateAccessTokenRepository) Update() shared_custom_errors.IDefaultE
 		},
 	)
 
-	if err != nil {
+	if result.Err() != nil {
 		return shared_custom_errors.NewDefaultError("UpdateAccessTokenRepository.Update()")
 	}
 
