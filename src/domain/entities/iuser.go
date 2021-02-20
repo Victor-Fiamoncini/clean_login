@@ -8,4 +8,6 @@ type IUser interface {
 	SetEmail(email string)
 	GetPassword() string
 	SetPassword(password string)
+	GetAccessToken() string
+	SetAccessToken(accessToken string)
 }

@@ -2,9 +2,10 @@ package entities
 
 // User struct
 type User struct {
-	ID       string `bson:"_id" json:"_id"`
-	Email    string `bson:"email" json:"email"`
-	Password string `bson:"password" json:"password"`
+	ID          string `bson:"_id" json:"_id"`
+	Email       string `bson:"email" json:"email"`
+	Password    string `bson:"password" json:"password"`
+	AccessToken string `bson:"access_token" json:"access_token"`
 }
 
 // NewUser func
@@ -40,4 +41,14 @@ func (u *User) GetPassword() string {
 // SetPassword User method
 func (u *User) SetPassword(password string) {
 	u.Password = password
+}
+
+// GetAccessToken User method
+func (u *User) GetAccessToken() string {
+	return u.AccessToken
+}
+
+// SetAccessToken User method
+func (u *User) SetAccessToken(accessToken string) {
+	u.AccessToken = accessToken
 }

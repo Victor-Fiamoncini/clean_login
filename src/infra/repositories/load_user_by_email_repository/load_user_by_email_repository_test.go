@@ -37,8 +37,8 @@ func TestShouldReturnAnUserIfUserIsFound(t *testing.T) {
 	sut, userModel := makeSut()
 	ctx := context.Background()
 
-	defer userModel.Drop(ctx)
 	defer ctx.Done()
+	defer userModel.Drop(ctx)
 
 	result, _ := userModel.InsertOne(ctx, bson.D{
 		{
