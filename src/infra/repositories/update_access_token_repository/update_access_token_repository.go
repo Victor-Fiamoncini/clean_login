@@ -45,6 +45,14 @@ func (uatr *UpdateAccessTokenRepository) SetAccessToken(accessToken string) {
 
 // Update UpdateAccessTokenRepository method
 func (uatr *UpdateAccessTokenRepository) Update() shared_custom_errors.IDefaultError {
+	if uatr.AccessToken == "" {
+		return shared_custom_errors.NewMissingParamError("AccessToken")
+	}
+
+	if uatr.UserID == "" {
+		return shared_custom_errors.NewMissingParamError("UserID")
+	}
+
 	ctx := context.Background()
 
 	defer ctx.Done()
@@ -52,7 +60,7 @@ func (uatr *UpdateAccessTokenRepository) Update() shared_custom_errors.IDefaultE
 	userObjectID, err := primitive.ObjectIDFromHex(uatr.UserID)
 
 	if err != nil {
-		return shared_custom_errors.NewDefaultError("U    pdateAccessTokenRepository.Update()")
+		return shared_custom_errors.NewDefaultError("UpdateAccessTokenRepository.Update()")
 	}
 
 	_, err = uatr.UserModel.UpdateOne(

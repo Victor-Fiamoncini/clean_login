@@ -73,3 +73,23 @@ func TestShouldUpdateTheUserWithTheGivenAccessToken(t *testing.T) {
 	assert.Equal(t, insertedUserId, user.GetID())
 	assert.Nil(t, err)
 }
+
+func TestShouldReturnAnErrorIfNoAccessTokenIsProvided(t *testing.T) {
+	sut, _ := makeSut()
+
+	sut.SetUserID("any_id")
+
+	err := sut.Update()
+
+	assert.Equal(t, "Missing param: AccessToken", err.GetError().Error())
+}
+
+func TestShouldReturnAnErrorIfNoUserIDIsProvided(t *testing.T) {
+	sut, _ := makeSut()
+
+	sut.SetAccessToken("any_token")
+
+	err := sut.Update()
+
+	assert.Equal(t, "Missing param: UserID", err.GetError().Error())
+}
