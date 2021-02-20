@@ -2,7 +2,6 @@ package updateaccesstokenrepository_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
@@ -27,7 +26,7 @@ func TestShouldUpdateTheUserWithTheGivenAccessToken(t *testing.T) {
 	ctx := context.Background()
 
 	defer ctx.Done()
-	// defer userModel.Drop(ctx)
+	defer userModel.Drop(ctx)
 
 	user := entities.NewUser()
 
@@ -53,18 +52,24 @@ func TestShouldUpdateTheUserWithTheGivenAccessToken(t *testing.T) {
 
 	sut.Update()
 
-	updatedUser := userModel.FindOne(ctx, bson.D{{
-		Key:   "_id",
-		Value: insertedUserId,
-	}})
-
-	fmt.Println("UPDATEEEEEEEEEEEEEEEE", updatedUser)
-
-	err := updatedUser.Decode(user)
+	insertedUserObjectID, err := primitive.ObjectIDFromHex(insertedUserId)
 
 	if err != nil {
-		t.Fail()
+		t.FailNow()
+	}
+
+	updatedUser := userModel.FindOne(ctx, bson.D{{
+		Key:   "_id",
+		Value: insertedUserObjectID,
+	}})
+
+	err = updatedUser.Decode(user)
+
+	if err != nil {
+		t.FailNow()
 	}
 
 	assert.Equal(t, "valid_token", user.GetAccessToken())
+	assert.Equal(t, insertedUserId, user.GetID())
+	assert.Nil(t, err)
 }
