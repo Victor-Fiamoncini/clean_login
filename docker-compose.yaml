@@ -8,6 +8,7 @@ services:
       - .:/go/src/auth_clean_architecture
     ports:
       - 4500:4500
+      - 3000:3000
   database:
     image: mongo
     container_name: mongo
