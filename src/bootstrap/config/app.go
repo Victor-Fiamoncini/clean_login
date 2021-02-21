@@ -11,6 +11,7 @@ func NewApp() *fiber.App {
 	app := fiber.New()
 
 	SetupApp(app)
+	SetupRoutes(app)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello World")
