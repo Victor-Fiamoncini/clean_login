@@ -6,6 +6,8 @@ import (
 
 // NewApp func
 func NewApp() *fiber.App {
+	LoadEnv()
+
 	app := fiber.New()
 
 	SetupApp(app)

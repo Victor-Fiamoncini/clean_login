@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -9,14 +10,21 @@ import (
 )
 
 var (
-	user     = "root"
-	password = "MongoDB2021!"
-	url      = "mongodb://localhost:27017"
-	database = "auth_clean_architecture"
+	user     = os.Getenv("MONGO_USER")
+	password = os.Getenv("MONGO_PASS")
+	url      = os.Getenv("MONGO_URL")
+	database = os.Getenv("MONGO_DB_NAME")
 )
 
 // GetCollection func
 func GetCollection(collection string) *mongo.Collection {
+	if user == "" && password == "" && url == "" && database == "" {
+		user = "root"
+		password = "MongoDB2021!"
+		url = "mongodb://localhost:27017"
+		database = "auth_clean_architecture"
+	}
+
 	client, err := mongo.NewClient(options.Client().ApplyURI(url).SetAuth(options.Credential{
 		Username: user,
 		Password: password,
