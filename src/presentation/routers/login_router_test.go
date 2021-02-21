@@ -27,8 +27,8 @@ func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
-			Email    string
-			Password string
+			Email    string `json:"email"`
+			Password string `json:"password"`
 		}{
 			Password: "any_password",
 		},
@@ -45,8 +45,8 @@ func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
-			Email    string
-			Password string
+			Email    string `json:"email"`
+			Password string `json:"password"`
 		}{
 			Email: "any_email@mail.com",
 		},
@@ -83,8 +83,8 @@ func TestShouldCallAuthUseCaseWithCorrectParams(t *testing.T) {
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
-			Email    string
-			Password string
+			Email    string `json:"email"`
+			Password string `json:"password"`
 		}{
 			Email:    "any_email@mail.com",
 			Password: "any_password",
@@ -104,8 +104,8 @@ func TestShouldReturn401WhenInvalidCredentialsAreProvided(t *testing.T) {
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
-			Email    string
-			Password string
+			Email    string `json:"email"`
+			Password string `json:"password"`
 		}{
 			Email:    "invalid_email@mail.com",
 			Password: "invalid_pass",
@@ -123,8 +123,8 @@ func TestShouldReturn500IfNoAuthUseCaseIsProvided(t *testing.T) {
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
-			Email    string
-			Password string
+			Email    string `json:"email"`
+			Password string `json:"password"`
 		}{
 			Email:    "any_email@mail.com",
 			Password: "any_pass",
@@ -142,8 +142,8 @@ func TestShouldReturn200WhenValidCredentailsAreProvided(t *testing.T) {
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
-			Email    string
-			Password string
+			Email    string `json:"email"`
+			Password string `json:"password"`
 		}{
 			Email:    "valid_email@mail.com",
 			Password: "valid_pass",
@@ -163,8 +163,8 @@ func TestShouldReturn400IfAnInvalidEmailIsProvided(t *testing.T) {
 
 	httpRequest := &helpers.HTTPRequest{
 		Body: struct {
-			Email    string
-			Password string
+			Email    string `json:"email"`
+			Password string `json:"password"`
 		}{
 			Email:    "invalid_email@mail.com",
 			Password: "any_password",
