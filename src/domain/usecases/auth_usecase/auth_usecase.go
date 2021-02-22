@@ -21,7 +21,12 @@ type AuthUseCase struct {
 }
 
 // NewAuthUseCase func
-func NewAuthUseCase(loadUserByEmailRepository luber.ILoadUserByEmailRepository, encrypter encrypter.IEncrypter, tokenGenerator token_generator.ITokenGenerator, updateAccessTokenRepository uatr.IUpdateAccessTokenRepository) IAuthUseCase {
+func NewAuthUseCase(
+	loadUserByEmailRepository luber.ILoadUserByEmailRepository,
+	encrypter encrypter.IEncrypter,
+	tokenGenerator token_generator.ITokenGenerator,
+	updateAccessTokenRepository uatr.IUpdateAccessTokenRepository,
+) IAuthUseCase {
 	return &AuthUseCase{
 		LoadUserByEmailRepository:   loadUserByEmailRepository,
 		Encrypter:                   encrypter,

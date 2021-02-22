@@ -7,5 +7,5 @@ import (
 func main() {
 	app := config.NewApp()
 
-	app.Listen(":3000")
+	app.Listen(":3333")
 }

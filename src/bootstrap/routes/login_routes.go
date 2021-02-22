@@ -17,14 +17,10 @@ import (
 
 // LoginRoutes func
 func LoginRoutes(router fiber.Router) {
-	tokenSecret := os.Getenv("TOKEN_SECRET")
-
-	userModel := database.GetCollection("users")
-
 	router.Post("/login", func(c *fiber.Ctx) error {
 		httpRequest := helpers.NewHTTPRequest()
 
-		err := c.BodyParser(httpRequest.Body)
+		err := c.BodyParser(&httpRequest.Body)
 
 		if err != nil {
 			return c.Status(400).JSON(fiber.Map{
@@ -32,6 +28,9 @@ func LoginRoutes(router fiber.Router) {
 				"message": "Invalid params are provided",
 			})
 		}
+
+		tokenSecret := os.Getenv("TOKEN_SECRET")
+		userModel := database.GetCollection("users")
 
 		loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(userModel)
 		encrypter := encrypter.NewEncrypter()

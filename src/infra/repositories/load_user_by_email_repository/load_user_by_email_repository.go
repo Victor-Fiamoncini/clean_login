@@ -53,8 +53,6 @@ func (luber *LoadUserByEmailRepository) Load() (entities.IUser, shared_custom_er
 	user := entities.NewUser()
 	ctx := context.Background()
 
-	defer ctx.Done()
-
 	result := luber.UserModel.FindOne(ctx, bson.D{{
 		Key:   "email",
 		Value: luber.Email,

@@ -9,14 +9,19 @@ services:
     ports:
       - 4500:4500
       - 3000:3000
+      - 3333:3333
   database:
-    image: mongo
-    container_name: mongo
-    hostname: mongodb
+    image: postgres
+    container_name: postgres
     env_file:
       - .env
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+      POSTGRES_PASSWORD: "Postgres2021!"
     ports:
-      - 27017:27017
+      - 5432:5432
+    networks:
+      - postgres-compose-network
+
+networks:
+  postgres-compose-network:
+    driver: bridge
