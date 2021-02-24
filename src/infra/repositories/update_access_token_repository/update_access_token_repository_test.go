@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/database"
 	uatr "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,11 +13,11 @@ import (
 )
 
 func makeSut() (uatr.IUpdateAccessTokenRepository, *mongo.Collection) {
-	userModel := database.GetCollection("users")
+	// userModel := nil
 
-	updateAccessTokenRepository := uatr.NewUpdateAccessTokenRepository(userModel)
+	updateAccessTokenRepository := uatr.NewUpdateAccessTokenRepository(nil)
 
-	return updateAccessTokenRepository, userModel
+	return updateAccessTokenRepository, nil
 }
 
 func TestShouldUpdateTheUserWithTheGivenAccessToken(t *testing.T) {

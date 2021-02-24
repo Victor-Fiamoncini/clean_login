@@ -1,8 +1,6 @@
 package config
 
-import (
-	"github.com/gofiber/fiber/v2"
-)
+import "github.com/gofiber/fiber/v2"
 
 // NewApp func
 func NewApp() *fiber.App {

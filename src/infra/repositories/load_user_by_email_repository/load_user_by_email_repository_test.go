@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/database"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,13 +12,13 @@ import (
 )
 
 func makeSut() (luber.ILoadUserByEmailRepository, *mongo.Collection) {
-	userModel := database.GetCollection("users")
+	// userModel := nil
 
-	loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(userModel)
+	loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(nil)
 
 	loadUserByEmailRepository.SetEmail("valid_email@mail.com")
 
-	return loadUserByEmailRepository, userModel
+	return loadUserByEmailRepository, nil
 }
 
 func TestShouldReturnNullAndAnErrorIfNoUserIsFound(t *testing.T) {

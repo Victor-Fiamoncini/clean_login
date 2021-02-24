@@ -4,7 +4,6 @@ import (
 	"os"
 
 	auth_usecase "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/database"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
 	uatr "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/helpers"
@@ -30,12 +29,12 @@ func LoginRoutes(router fiber.Router) {
 		}
 
 		tokenSecret := os.Getenv("TOKEN_SECRET")
-		userModel := database.GetCollection("users")
+		// userModel := nil
 
-		loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(userModel)
+		loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(nil)
 		encrypter := encrypter.NewEncrypter()
 		tokenGenerator := token_generator.NewTokenGenerator(tokenSecret)
-		updateAccessTokenRepository := uatr.NewUpdateAccessTokenRepository(userModel)
+		updateAccessTokenRepository := uatr.NewUpdateAccessTokenRepository(nil)
 
 		authUseCase := auth_usecase.NewAuthUseCase(
 			loadUserByEmailRepository,

@@ -2,10 +2,10 @@ package entities
 
 // User struct
 type User struct {
-	ID          string `bson:"_id" json:"_id"`
-	Email       string `bson:"email" json:"email"`
-	Password    string `bson:"password" json:"password"`
-	AccessToken string `bson:"access_token" json:"access_token"`
+	ID          string `json:"_id"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	AccessToken string `json:"access_token"`
 }
 
 // NewUser func

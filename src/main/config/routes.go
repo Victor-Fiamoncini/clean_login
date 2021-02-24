@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/bootstrap/routes"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/main/routes"
 	"github.com/gofiber/fiber/v2"
 )
 
