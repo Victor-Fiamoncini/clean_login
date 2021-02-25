@@ -1,76 +1,51 @@
 package updateaccesstokenrepository_test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/database"
 	uatr "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
+	"github.com/go-pg/pg/v10"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func makeSut() (uatr.IUpdateAccessTokenRepository, *mongo.Collection) {
-	// userModel := nil
+func makeSut() (uatr.IUpdateAccessTokenRepository, *pg.DB) {
+	db := database.OpenConnection()
 
-	updateAccessTokenRepository := uatr.NewUpdateAccessTokenRepository(nil)
+	updateAccessTokenRepository := uatr.NewUpdateAccessTokenRepository(db)
 
-	return updateAccessTokenRepository, nil
+	return updateAccessTokenRepository, db
 }
 
 func TestShouldUpdateTheUserWithTheGivenAccessToken(t *testing.T) {
-	sut, userModel := makeSut()
-	ctx := context.Background()
+	sut, db := makeSut()
 
-	defer ctx.Done()
-	defer userModel.Drop(ctx)
+	newUser := entities.NewUser()
+	newUser.SetEmail("valid_email@mail.com")
+	newUser.SetPassword("hashed_password")
 
-	user := entities.NewUser()
+	db.Model(newUser).Insert()
+	db.Model(newUser).Where("email = ?", "valid_email@mail.com").First()
 
-	result, _ := userModel.InsertOne(ctx, bson.D{
-		{
-			Key:   "email",
-			Value: "valid_email@mail.com",
-		},
-		{
-			Key:   "password",
-			Value: "hashed_password",
-		},
-		{
-			Key:   "access_token",
-			Value: "",
-		},
-	})
+	insertedUserID := newUser.GetID()
 
-	insertedUserId := result.InsertedID.(primitive.ObjectID).Hex()
-
-	sut.SetUserID(insertedUserId)
+	sut.SetUserID(insertedUserID)
 	sut.SetAccessToken("valid_token")
 
-	sut.Update()
+	err := sut.Update()
 
-	insertedUserObjectID, err := primitive.ObjectIDFromHex(insertedUserId)
+	updatedUser := entities.NewUser()
+	updatedUser.SetID(insertedUserID)
 
-	if err != nil {
-		t.FailNow()
-	}
+	db.Model(updatedUser).WherePK().Select()
 
-	updatedUser := userModel.FindOne(ctx, bson.D{{
-		Key:   "_id",
-		Value: insertedUserObjectID,
-	}})
-
-	err = updatedUser.Decode(user)
-
-	if err != nil {
-		t.FailNow()
-	}
-
-	assert.Equal(t, "valid_token", user.GetAccessToken())
-	assert.Equal(t, insertedUserId, user.GetID())
+	assert.Equal(t, "valid_token", updatedUser.GetAccessToken())
+	assert.Equal(t, insertedUserID, updatedUser.GetID())
 	assert.Nil(t, err)
+
+	db.Model(newUser).Where("email = ?", newUser.GetEmail()).Delete()
 }
 
 func TestShouldReturnAnErrorIfNoAccessTokenIsProvided(t *testing.T) {
@@ -83,7 +58,7 @@ func TestShouldReturnAnErrorIfNoAccessTokenIsProvided(t *testing.T) {
 	assert.Equal(t, "Missing param: AccessToken", err.GetError().Error())
 }
 
-func TestShouldReturnAnErrorIfNoUserIDIsProvided(t *testing.T) {
+func TestShouldReturnAnErrorIfNoUserIdIsProvided(t *testing.T) {
 	sut, _ := makeSut()
 
 	sut.SetAccessToken("any_token")
@@ -94,33 +69,23 @@ func TestShouldReturnAnErrorIfNoUserIDIsProvided(t *testing.T) {
 }
 
 func TestShouldReturnAnErrorIfUserWasNotFound(t *testing.T) {
-	sut, userModel := makeSut()
-	ctx := context.Background()
+	sut, db := makeSut()
 
-	defer ctx.Done()
-	defer userModel.Drop(ctx)
+	newUser := entities.NewUser()
+	newUser.SetEmail("valid_email@mail.com")
+	newUser.SetPassword("hashed_password")
+	db.Model(newUser).Where("email = ?", newUser.GetEmail()).Delete()
 
-	userModel.InsertOne(ctx, bson.D{
-		{
-			Key:   "email",
-			Value: "valid_email@mail.com",
-		},
-		{
-			Key:   "password",
-			Value: "hashed_password",
-		},
-		{
-			Key:   "access_token",
-			Value: "",
-		},
-	})
+	db.Model(newUser).Insert()
 
-	randomID := primitive.NewObjectID().Hex()
+	randomID, _ := uuid.NewUUID()
 
-	sut.SetUserID(randomID)
+	sut.SetUserID(randomID.String())
 	sut.SetAccessToken("valid_token")
 
 	err := sut.Update()
 
 	assert.Equal(t, "Error with: UpdateAccessTokenRepository.Update()", err.GetError().Error())
+
+	db.Model(newUser).Where("email = ?", newUser.GetEmail()).Delete()
 }

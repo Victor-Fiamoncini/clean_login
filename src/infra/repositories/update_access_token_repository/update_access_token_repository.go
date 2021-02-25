@@ -1,25 +1,22 @@
 package updateaccesstokenrepository
 
 import (
-	"context"
-
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/go-pg/pg/v10"
 )
 
 // UpdateAccessTokenRepository struct
 type UpdateAccessTokenRepository struct {
 	UserID      string
 	AccessToken string
-	UserModel   *mongo.Collection
+	Database    *pg.DB
 }
 
 // NewUpdateAccessTokenRepository func
-func NewUpdateAccessTokenRepository(userModel *mongo.Collection) IUpdateAccessTokenRepository {
+func NewUpdateAccessTokenRepository(db *pg.DB) IUpdateAccessTokenRepository {
 	return &UpdateAccessTokenRepository{
-		UserModel: userModel,
+		Database: db,
 	}
 }
 
@@ -53,31 +50,17 @@ func (uatr *UpdateAccessTokenRepository) Update() shared_custom_errors.IDefaultE
 		return shared_custom_errors.NewMissingParamError("UserID")
 	}
 
-	ctx := context.Background()
+	user := entities.NewUser()
 
-	defer ctx.Done()
-
-	userObjectID, err := primitive.ObjectIDFromHex(uatr.UserID)
+	err := uatr.Database.Model(user).Where("id = ?", uatr.UserID).First()
 
 	if err != nil {
 		return shared_custom_errors.NewDefaultError("UpdateAccessTokenRepository.Update()")
 	}
 
-	result := uatr.UserModel.FindOneAndUpdate(
-		ctx,
-		bson.M{
-			"_id": bson.M{
-				"$eq": userObjectID,
-			},
-		},
-		bson.M{
-			"$set": bson.M{
-				"access_token": uatr.AccessToken,
-			},
-		},
-	)
+	_, err = uatr.Database.Model(user).Set("access_token = ?", uatr.AccessToken).Where("id = ?", uatr.UserID).Update()
 
-	if result.Err() != nil {
+	if err != nil {
 		return shared_custom_errors.NewDefaultError("UpdateAccessTokenRepository.Update()")
 	}
 
