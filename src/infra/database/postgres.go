@@ -12,8 +12,16 @@ import (
 var connectionInstance *pg.DB
 var once sync.Once
 
+var (
+	host     = "localhost"
+	user     = "postgres"
+	password = "postgres"
+	port     = "5432"
+	dbName   = "auth"
+)
+
 // OpenConnection func
-func OpenConnection(host string, user string, password string, port string, dbName string) *pg.DB {
+func OpenConnection() *pg.DB {
 	if connectionInstance == nil {
 		once.Do(func() {
 			connectionInstance = pg.Connect(&pg.Options{

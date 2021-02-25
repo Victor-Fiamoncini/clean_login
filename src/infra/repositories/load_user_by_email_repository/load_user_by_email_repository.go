@@ -1,26 +1,22 @@
 package loaduserbyemailrepository
 
 import (
-	"context"
-
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/go-pg/pg/v10"
 )
 
 // LoadUserByEmailRepository struct
 type LoadUserByEmailRepository struct {
-	Email     string
-	User      entities.IUser
-	UserModel *mongo.Collection
+	Email    string
+	User     entities.IUser
+	Database *pg.DB
 }
 
 // NewLoadUserByEmailRepository func
-func NewLoadUserByEmailRepository(userModel *mongo.Collection) ILoadUserByEmailRepository {
+func NewLoadUserByEmailRepository(db *pg.DB) ILoadUserByEmailRepository {
 	return &LoadUserByEmailRepository{
-		UserModel: userModel,
+		Database: db,
 	}
 }
 
@@ -51,16 +47,8 @@ func (luber *LoadUserByEmailRepository) Load() (entities.IUser, shared_custom_er
 	}
 
 	user := entities.NewUser()
-	ctx := context.Background()
 
-	result := luber.UserModel.FindOne(ctx, bson.D{{
-		Key:   "email",
-		Value: luber.Email,
-	}}, options.FindOne().SetProjection(bson.M{
-		"password": 1,
-	}))
-
-	err := result.Decode(user)
+	err := luber.Database.Model(user).Where("email = ?", luber.Email).First()
 
 	if err != nil {
 		return nil, shared_custom_errors.NewDefaultError("LoadUserByEmailRepository.Load()")

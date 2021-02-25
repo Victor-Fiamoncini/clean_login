@@ -1,24 +1,23 @@
 package loaduserbyemailrepository_test
 
 import (
-	"context"
 	"testing"
 
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/database"
 	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
+	"github.com/go-pg/pg/v10"
 	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func makeSut() (luber.ILoadUserByEmailRepository, *mongo.Collection) {
-	// userModel := nil
+func makeSut() (luber.ILoadUserByEmailRepository, *pg.DB) {
+	db := database.OpenConnection()
 
-	loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(nil)
+	loadUserByEmailRepository := luber.NewLoadUserByEmailRepository(db)
 
 	loadUserByEmailRepository.SetEmail("valid_email@mail.com")
 
-	return loadUserByEmailRepository, nil
+	return loadUserByEmailRepository, db
 }
 
 func TestShouldReturnNullAndAnErrorIfNoUserIsFound(t *testing.T) {
@@ -33,25 +32,22 @@ func TestShouldReturnNullAndAnErrorIfNoUserIsFound(t *testing.T) {
 }
 
 func TestShouldReturnAnUserIfUserIsFound(t *testing.T) {
-	sut, userModel := makeSut()
-	ctx := context.Background()
+	sut, db := makeSut()
 
-	defer ctx.Done()
-	defer userModel.Drop(ctx)
+	newUser := entities.NewUser()
 
-	result, _ := userModel.InsertOne(ctx, bson.D{
-		{
-			Key:   "email",
-			Value: "valid_email@mail.com",
-		},
-	})
+	newUser.SetEmail("valid_email@mail.com")
+	newUser.SetPassword("valid_password")
+
+	db.Model(newUser).Insert()
 
 	user, err := sut.Load()
-	insertedUserId := result.InsertedID.(primitive.ObjectID).Hex()
 
-	assert.Equal(t, user.GetPassword(), user.GetPassword())
-	assert.Equal(t, insertedUserId, user.GetID())
+	assert.Equal(t, user.GetEmail(), "valid_email@mail.com")
+	assert.Equal(t, user.GetPassword(), "valid_password")
 	assert.Nil(t, err)
+
+	db.Model(newUser).Where("email = ?", newUser.GetEmail()).Delete()
 }
 
 func TestShouldReturnAnErrorIfEmailIsNotProvided(t *testing.T) {
