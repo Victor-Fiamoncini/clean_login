@@ -2,7 +2,7 @@ version: "3"
 
 services:
   app:
-    container_name: auth_clean_architecture
+    container_name: auth_clean_architecture_app
     build: .
     volumes:
       - .:/go/src/auth_clean_architecture
@@ -10,18 +10,14 @@ services:
       - 4500:4500
       - 3000:3000
       - 3333:3333
+    depends_on:
+      - database
+
   database:
-    image: postgres
-    container_name: postgres
-    env_file:
-      - .env
+    image: postgres:alpine
     environment:
-      POSTGRES_PASSWORD: "Postgres2021!"
+      POSTGRES_DB: auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - 5432:5432
-    networks:
-      - postgres-compose-network
-
-networks:
-  postgres-compose-network:
-    driver: bridge

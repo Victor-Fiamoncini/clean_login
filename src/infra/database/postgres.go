@@ -13,20 +13,14 @@ var connectionInstance *pg.DB
 var once sync.Once
 
 // OpenConnection func
-func OpenConnection(
-	host string,
-	user string,
-	password string,
-	port uint16,
-	dbName string,
-) *pg.DB {
+func OpenConnection(host string, user string, password string, port string, dbName string) *pg.DB {
 	if connectionInstance == nil {
 		once.Do(func() {
 			connectionInstance = pg.Connect(&pg.Options{
 				User:     user,
 				Password: password,
+				Addr:     fmt.Sprintf("%s:%s", host, port),
 				Database: dbName,
-				Addr:     fmt.Sprintf("%s:%d", host, port),
 			})
 		})
 	}
@@ -53,7 +47,6 @@ func CreateSchemas(db *pg.DB) error {
 
 	for _, model := range models {
 		err := db.Model(model).CreateTable(&orm.CreateTableOptions{
-			Temp:        true,
 			IfNotExists: true,
 		})
 

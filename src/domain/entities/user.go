@@ -1,11 +1,16 @@
 package entities
 
+import "time"
+
 // User struct
 type User struct {
-	ID          string `json:"_id"`
-	Email       string `json:"email"`
-	Password    string `json:"password"`
-	AccessToken string `json:"access_token"`
+	tableName   struct{}  `pg:"users"`
+	ID          string    `json:"id" pg:",pk,type:uuid,default:gen_random_uuid()"`
+	Email       string    `json:"email" pg:"type:varchar(255),unique,notnull"`
+	Password    string    `json:"password" pg:"type:varchar(255),notnull"`
+	AccessToken string    `json:"access_token"`
+	CreatedAt   time.Time `json:"created_at" pg:"default:now(),notnull"`
+	UpdatedAt   time.Time `json:"updated_at" pg:"default:now(),notnull"`
 }
 
 // NewUser func
