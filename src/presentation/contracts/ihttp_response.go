@@ -1,4 +1,4 @@
-package helpers
+package contracts
 
 import (
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
@@ -17,8 +17,8 @@ type IHTTPResponse interface {
 	GetBody() types.Map
 	SetBody(body types.Map)
 
-	Success(data types.Map) *HTTPResponse
-	BadRequest(err shared_custom_errors.IDefaultError) *HTTPResponse
-	Unauthorized() *HTTPResponse
-	ServerError() *HTTPResponse
+	Success(data types.Map) IHTTPResponse
+	BadRequest(err shared_custom_errors.IDefaultError) IHTTPResponse
+	Unauthorized() IHTTPResponse
+	ServerError() IHTTPResponse
 }

@@ -1,6 +1,7 @@
-package helpers
+package http
 
 import (
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/contracts"
 	custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/errors"
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/types"
@@ -15,7 +16,7 @@ type HTTPResponse struct {
 }
 
 // NewHTTPResponse func
-func NewHTTPResponse() IHTTPResponse {
+func NewHTTPResponse() contracts.IHTTPResponse {
 	return &HTTPResponse{}
 }
 
@@ -60,7 +61,7 @@ func (hr *HTTPResponse) SetBody(body types.Map) {
 }
 
 // Success HTTPResponse method
-func (hr *HTTPResponse) Success(data types.Map) *HTTPResponse {
+func (hr *HTTPResponse) Success(data types.Map) contracts.IHTTPResponse {
 	hr.StatusCode = 200
 	hr.Body = data
 
@@ -68,7 +69,7 @@ func (hr *HTTPResponse) Success(data types.Map) *HTTPResponse {
 }
 
 // BadRequest HTTPResponse method
-func (hr *HTTPResponse) BadRequest(err shared_custom_errors.IDefaultError) *HTTPResponse {
+func (hr *HTTPResponse) BadRequest(err shared_custom_errors.IDefaultError) contracts.IHTTPResponse {
 	hr.StatusCode = 400
 
 	hr.ErrorObject = err.GetError()
@@ -78,7 +79,7 @@ func (hr *HTTPResponse) BadRequest(err shared_custom_errors.IDefaultError) *HTTP
 }
 
 // Unauthorized HTTPResponse method
-func (hr *HTTPResponse) Unauthorized() *HTTPResponse {
+func (hr *HTTPResponse) Unauthorized() contracts.IHTTPResponse {
 	hr.StatusCode = 401
 
 	newUnauthorizedError := custom_errors.NewUnauthorizedError()
@@ -90,7 +91,7 @@ func (hr *HTTPResponse) Unauthorized() *HTTPResponse {
 }
 
 // ServerError HTTPResponse method
-func (hr *HTTPResponse) ServerError() *HTTPResponse {
+func (hr *HTTPResponse) ServerError() contracts.IHTTPResponse {
 	hr.StatusCode = 500
 
 	newServerError := custom_errors.NewServerError()

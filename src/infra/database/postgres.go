@@ -12,7 +12,7 @@ import (
 var connectionInstance *pg.DB
 var once sync.Once
 
-var (
+const (
 	host     = "localhost"
 	user     = "postgres"
 	password = "postgres"

@@ -1,4 +1,4 @@
-package routers_test
+package controllers_test
 
 import (
 	"testing"
