@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"reflect"
 
 	auth_usecase "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
@@ -29,15 +30,19 @@ func NewLoginController(
 }
 
 // Handle LoginController method
-func (lc *LoginController) Handle(httpRequest contracts.IHTTPRequest) contracts.IHTTPResponse {
-	httpResponse := http.NewHTTPResponse()
+func (lc *LoginController) Handle(httpRequest contracts.IRequest) contracts.IResponse {
+	httpResponse := http.NewResponse()
 
 	if httpRequest == nil || reflect.ValueOf(httpRequest.GetBody()).IsZero() || lc.AuthUseCase == nil {
 		return httpResponse.ServerError()
 	}
 
-	email := httpRequest.Body.Email
-	password := httpRequest.Body.Password
+	requestBody := httpRequest.GetBody()
+
+	email := requestBody["email"]
+	password := requestBody["password"]
+
+	fmt.Println(email, password)
 
 	if email == "" {
 		return httpResponse.BadRequest(shared_custom_errors.NewMissingParamError("email"))
@@ -56,9 +61,9 @@ func (lc *LoginController) Handle(httpRequest contracts.IHTTPRequest) contracts.
 	lc.AuthUseCase.SetEmail(email)
 	lc.AuthUseCase.SetPassword(password)
 
-	accessToken, authUseCaseErr := lc.AuthUseCase.Auth()
+	accessToken, err := lc.AuthUseCase.Auth()
 
-	if authUseCaseErr != nil || accessToken == "" {
+	if err != nil || accessToken == "" {
 		return httpResponse.Unauthorized()
 	}
 

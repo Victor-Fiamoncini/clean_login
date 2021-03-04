@@ -2,5 +2,5 @@ package contracts
 
 // IController interface
 type IController interface {
-	Handle(httpRequest IHTTPRequest) IHTTPResponse
+	Handle(httpRequest IRequest) IResponse
 }

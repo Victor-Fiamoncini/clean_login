@@ -6,8 +6,8 @@ import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/types"
 )
 
-// IHTTPResponse interface
-type IHTTPResponse interface {
+// IResponse interface
+type IResponse interface {
 	GetStatusCode() int
 	SetStatusCode(statusCode int)
 	GetErrorObject() error
@@ -17,8 +17,8 @@ type IHTTPResponse interface {
 	GetBody() types.Map
 	SetBody(body types.Map)
 
-	Success(data types.Map) IHTTPResponse
-	BadRequest(err shared_custom_errors.IDefaultError) IHTTPResponse
-	Unauthorized() IHTTPResponse
-	ServerError() IHTTPResponse
+	Success(data types.Map) IResponse
+	BadRequest(err shared_custom_errors.IDefaultError) IResponse
+	Unauthorized() IResponse
+	ServerError() IResponse
 }
