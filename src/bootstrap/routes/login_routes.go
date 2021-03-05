@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/bootstrap/factories"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/contracts/payloads"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/http"
 	"github.com/gofiber/fiber/v2"
 )
@@ -9,15 +10,8 @@ import (
 // LoginRoutes func
 func LoginRoutes(router fiber.Router) {
 	router.Post("/login", func(c *fiber.Ctx) error {
-		httpRequest := http.NewHTTPRequest()
-
-		httpRequest.SetBody(struct {
-			Email    string `json:"email"`
-			Password string `json:"password"`
-		}{
-			Email:    "",
-			Password: "",
-		})
+		httpRequest := http.NewRequest()
+		httpRequest.SetBody(payloads.NewLoginPayload())
 
 		err := c.BodyParser(httpRequest.GetBody())
 
