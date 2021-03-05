@@ -1,8 +1,6 @@
 package factories
 
 import (
-	"os"
-
 	auth_usecase "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/database"
 	load_user_by_email_repository "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
@@ -16,7 +14,7 @@ import (
 
 // MakeLoginController func
 func MakeLoginController() contracts.IController {
-	tokenSecret := os.Getenv("TOKEN_SECRET")
+	tokenSecret := "MY_SECRET"
 	userModel := database.OpenConnection()
 
 	loadUserByEmailRepository := load_user_by_email_repository.NewLoadUserByEmailRepository(userModel)
