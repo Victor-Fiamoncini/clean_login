@@ -33,7 +33,7 @@ func NewLoginController(
 func (lc *LoginController) Handle(httpRequest contracts.IRequest) contracts.IResponse {
 	httpResponse := http.NewResponse()
 
-	if httpRequest == nil || reflect.ValueOf(httpRequest.GetBody()).IsZero() || lc.AuthUseCase == nil {
+	if httpRequest == nil || !reflect.ValueOf(httpRequest.GetBody()).IsValid() {
 		return httpResponse.ServerError()
 	}
 

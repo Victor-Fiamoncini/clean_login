@@ -9,10 +9,10 @@ import (
 	update_access_token_repository "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
 	encrypter "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/encrypter"
 	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/token_generator"
-	load_user_by_email_repository_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/test/infra/repositories/load_user_by_email_repository/mocks"
-	update_access_token_repository_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/test/infra/repositories/update_access_token_repository/mocks"
-	encrypter_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/test/shared/helpers/encrypter/mocks"
-	token_generator_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/test/shared/helpers/token_generator/mocks"
+	load_user_by_email_repository_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/test/infra/repositories/load_user_by_email_repository/mocks"
+	update_access_token_repository_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/test/infra/repositories/update_access_token_repository/mocks"
+	encrypter_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/test/shared/helpers/encrypter/mocks"
+	token_generator_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/test/shared/helpers/token_generator/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
