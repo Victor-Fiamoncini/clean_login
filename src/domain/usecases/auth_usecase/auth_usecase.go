@@ -2,8 +2,8 @@ package authusecase
 
 import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/entities"
-	luber "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
-	uatr "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
+	load_user_by_email_repository "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/load_user_by_email_repository"
+	update_access_token_repository "github.com/Victor-Fiamoncini/auth_clean_architecture/src/infra/repositories/update_access_token_repository"
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/encrypter"
 	token_generator "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/helpers/token_generator"
@@ -14,18 +14,18 @@ type AuthUseCase struct {
 	Email                       string
 	Password                    string
 	AccessToken                 string
-	LoadUserByEmailRepository   luber.ILoadUserByEmailRepository
+	LoadUserByEmailRepository   load_user_by_email_repository.ILoadUserByEmailRepository
 	Encrypter                   encrypter.IEncrypter
 	TokenGenerator              token_generator.ITokenGenerator
-	UpdateAccessTokenRepository uatr.IUpdateAccessTokenRepository
+	UpdateAccessTokenRepository update_access_token_repository.IUpdateAccessTokenRepository
 }
 
 // NewAuthUseCase func
 func NewAuthUseCase(
-	loadUserByEmailRepository luber.ILoadUserByEmailRepository,
+	loadUserByEmailRepository load_user_by_email_repository.ILoadUserByEmailRepository,
 	encrypter encrypter.IEncrypter,
 	tokenGenerator token_generator.ITokenGenerator,
-	updateAccessTokenRepository uatr.IUpdateAccessTokenRepository,
+	updateAccessTokenRepository update_access_token_repository.IUpdateAccessTokenRepository,
 ) IAuthUseCase {
 	return &AuthUseCase{
 		LoadUserByEmailRepository:   loadUserByEmailRepository,

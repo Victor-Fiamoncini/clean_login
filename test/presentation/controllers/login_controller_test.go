@@ -1,17 +1,12 @@
 package controller_test
 
 import (
-	"testing"
-
 	auth_usecase "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
-	auth_usecase_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase/mocks"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/contracts"
 	controller "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/controllers"
-	http "github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/http"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/types"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/validators"
-	validators_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/validators/mocks"
-	"github.com/stretchr/testify/assert"
+	auth_usecase_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/test/domain/usecases/auth_usecase/mocks"
+	validators_mocks "github.com/Victor-Fiamoncini/auth_clean_architecture/test/shared/validators/mocks"
 )
 
 func makeSut() (contracts.IController, auth_usecase.IAuthUseCase, validators.IEmailValidator) {
@@ -24,21 +19,21 @@ func makeSut() (contracts.IController, auth_usecase.IAuthUseCase, validators.IEm
 	return controller.NewLoginController(authUseCaseSpy, emailValidatorSpy), authUseCaseSpy, emailValidatorSpy
 }
 
-func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
-	sut, _, _ := makeSut()
+// func TestShouldReturn400IfNoEmailIsProvided(t *testing.T) {
+// 	sut, _, _ := makeSut()
 
-	httpRequest := http.NewRequest()
-	body := make(types.StringMap)
-	body["password"] = "any_password"
-	body["email"] = "hello"
+// 	httpRequest := http.NewRequest()
+// 	body := make(types.StringMap)
+// 	body["password"] = "any_password"
+// 	body["email"] = "hello"
 
-	httpRequest.SetBody(body)
+// 	httpRequest.SetBody(body)
 
-	httpResponse := sut.Handle(httpRequest)
+// 	httpResponse := sut.Handle(httpRequest)
 
-	assert.Equal(t, 400, httpResponse.GetStatusCode())
-	assert.Equal(t, "Missing param: email", httpResponse.GetErrorObject().Error())
-}
+// 	assert.Equal(t, 400, httpResponse.GetStatusCode())
+// 	assert.Equal(t, "Missing param: email", httpResponse.GetErrorObject().Error())
+// }
 
 // func TestShouldReturn400IfNoPasswordIsProvided(t *testing.T) {
 // 	sut, _, _ := makeSut()

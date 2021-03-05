@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"fmt"
 	"reflect"
 
 	auth_usecase "github.com/Victor-Fiamoncini/auth_clean_architecture/src/domain/usecases/auth_usecase"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/contracts"
+	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/contracts/payloads"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/http"
 	shared_custom_errors "github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/errors"
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/types"
@@ -37,12 +37,10 @@ func (lc *LoginController) Handle(httpRequest contracts.IRequest) contracts.IRes
 		return httpResponse.ServerError()
 	}
 
-	requestBody := httpRequest.GetBody()
+	parsedBody := httpRequest.GetBody().(*payloads.LoginPayload)
 
-	email := requestBody["email"]
-	password := requestBody["password"]
-
-	fmt.Println(email, password)
+	email := parsedBody.Email
+	password := parsedBody.Password
 
 	if email == "" {
 		return httpResponse.BadRequest(shared_custom_errors.NewMissingParamError("email"))

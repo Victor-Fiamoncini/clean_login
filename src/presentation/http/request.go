@@ -2,12 +2,11 @@ package http
 
 import (
 	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/presentation/contracts"
-	"github.com/Victor-Fiamoncini/auth_clean_architecture/src/shared/types"
 )
 
 // Request struct
 type Request struct {
-	Body types.StringMap
+	Body interface{}
 }
 
 // NewRequest func
@@ -16,11 +15,11 @@ func NewRequest() contracts.IRequest {
 }
 
 // GetBody Request method
-func (r *Request) GetBody() types.StringMap {
+func (r *Request) GetBody() interface{} {
 	return r.Body
 }
 
 // SetBody Request method
-func (r *Request) SetBody(Body types.StringMap) {
+func (r *Request) SetBody(Body interface{}) {
 	r.Body = Body
 }
