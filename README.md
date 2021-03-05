@@ -1,6 +1,7 @@
-# Auth Clean Architecture
+# Clean Login
 
-Auth service model with clean architecture & TDD
+An login HTTP service.
+Built with clean architecture & TDD.
 
 ----------
 Released in 2021. This project is under the MIT license.
