@@ -1,6 +1,6 @@
 # Clean Login
 
-An login HTTP service.
+Login HTTP service.
 Built with clean architecture & TDD.
 
 ----------
